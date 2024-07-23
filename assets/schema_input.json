@@ -13,21 +13,25 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "algorithm": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.json$",
+                "errorMessage": "Algorithm file with .json extension must be provided and must exist"
             },
-            "fastq_2": {
+            "images": {
+                "type": "string",
+            },
+            "mosaic_file": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
-            }
+                "pattern": "^\\S+\\.csv$",
+                "errorMessage": "Mosaic pixel transformation matrix file file with .csv extension must be provided and must exist"
+            },
+
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "algorithm", "images", "mosaic_file"]
     }
 }

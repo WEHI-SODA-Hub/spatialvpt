@@ -32,6 +32,8 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
 
     take:
     samplesheet // channel: samplesheet read in from --input
+    tile_size
+    tile_overlap
 
     main:
 
@@ -39,11 +41,13 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
     // WORKFLOW: Run pipeline
     //
     SPATIALSEGMENTATION (
-        samplesheet
+        samplesheet,
+        tile_size,
+        tile_overlap
     )
 
     emit:
-    multiqc_report = SPATIALSEGMENTATION.out.multiqc_report // channel: /path/to/multiqc_report.html
+    specification_json = SPATIALSEGMENTATION.out.specification_json // channel: /path/to/multiqc_report.html
 
 }
 /*
@@ -66,14 +70,18 @@ workflow {
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.input,
+        params.tile_size,
+        params.tile_overlap
     )
 
     //
     // WORKFLOW: Run main workflow
     //
     BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.samplesheet,
+        PIPELINE_INITIALISATION.out.tile_size,
+        PIPELINE_INITIALISATION.out.tile_olap
     )
 
     //
@@ -85,8 +93,7 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
-        BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION.out.multiqc_report
+        params.hook_url
     )
 }
 

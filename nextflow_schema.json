@@ -46,6 +46,26 @@
                 }
             }
         },
+        "segmentation_options": {
+            "title": "Segmentation options",
+            "type": "object",
+            "fa_icon": "fas fa-cogs",
+            "description": "Options for the segmentation step.",
+            "properties": {
+                "tile_size": {
+                    "type": "integer",
+                    "description": "Tile size for splitting large images.",
+                    "default": 4096,
+                    "fa_icon": "fas fa-th-large",
+                },
+                "tile_overlap": {
+                    "type": "integer",
+                    "description": "Overlap between tiles.",
+                    "default": 400,
+                    "fa_icon": "fas fa-th-large",
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",

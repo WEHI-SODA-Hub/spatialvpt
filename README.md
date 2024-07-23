@@ -10,7 +10,7 @@
 
 ## Introduction
 
-**BioimageAnalysisCoreWEHI/spatialsegmentation** is a bioinformatics pipeline that ...
+**BioimageAnalysisCoreWEHI/spatialsegmentation** is a bioinformatics pipeline that performs cell segmentation and creates a QC report for MERSCOPE data using the vizgen-postprocessing tool.
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -21,9 +21,6 @@
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
@@ -38,11 +35,11 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,algorithm,images,mosaic_file
+small_set,cellpose_default_1_ZLevel.json,202305010900_U2OS_small_set_VMSC00000/region_0/images,202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
+Each row represents a region to perform segmentation on.
 
 -->
 
