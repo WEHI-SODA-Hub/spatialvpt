@@ -56,13 +56,13 @@
                     "type": "integer",
                     "description": "Tile size for splitting large images.",
                     "default": 4096,
-                    "fa_icon": "fas fa-th-large",
+                    "fa_icon": "fas fa-th-large"
                 },
                 "tile_overlap": {
                     "type": "integer",
                     "description": "Overlap between tiles.",
                     "default": 400,
-                    "fa_icon": "fas fa-th-large",
+                    "fa_icon": "fas fa-th-large"
                 }
             }
         },
@@ -278,6 +278,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/segmentation_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

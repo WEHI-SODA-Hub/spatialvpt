@@ -22,6 +22,9 @@
             },
             "images": {
                 "type": "string",
+                "format": "directory-path",
+                "exists": true,
+                "errorMessage": "Images folder must be provided and must exist"
             },
             "mosaic_file": {
                 "type": "string",

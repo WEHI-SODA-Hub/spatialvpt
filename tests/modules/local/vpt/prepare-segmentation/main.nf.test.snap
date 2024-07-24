@@ -1,0 +1,35 @@
+{
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "segmentation_specification.json:md5,9ed22ac190ac21d66016d72406b2d3fe"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,da001a9b9e4e5a439bea2fe6ed119ec8"
+                ],
+                "specification_json": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "segmentation_specification.json:md5,9ed22ac190ac21d66016d72406b2d3fe"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,da001a9b9e4e5a439bea2fe6ed119ec8"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.1"
+        },
+        "timestamp": "2024-07-24T15:26:12.290493135"
+    }
+}
