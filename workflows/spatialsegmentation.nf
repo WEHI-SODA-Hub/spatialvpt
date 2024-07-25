@@ -28,7 +28,7 @@ workflow SPATIALSEGMENTATION {
     ch_multiqc_files = Channel.empty()
 
     //
-    // MODULE: Run FastQC
+    // MODULE: Run vpt prepare-segmentation
     //
     PREPARE_SEGMENTATION (
         ch_samplesheet,
@@ -48,7 +48,6 @@ workflow SPATIALSEGMENTATION {
         ).set { ch_collated_versions }
 
     emit:
-    specification_json = PREPARE_SEGMENTATION.out.specification_json
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 

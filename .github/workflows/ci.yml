@@ -10,6 +10,7 @@ on:
 
 env:
   NXF_ANSI_LOG: false
+  REGISTRY: ghcr.io
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
@@ -44,12 +45,19 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           mkdir -p data/example_analysis_algorithm
 
-          wget https://raw.githubusercontent.com/Vizgen/vizgen-postprocessing/develop/example_analysis_algorithm/cellpose_default_1_ZLevel.json
+          wget -q https://raw.githubusercontent.com/Vizgen/vizgen-postprocessing/develop/example_analysis_algorithm/cellpose_default_1_ZLevel.json
           mv cellpose_default_1_ZLevel.json data/example_analysis_algorithm
 
-          wget https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip
+          wget -q https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip
           unzip 202305010900_U2OS_small_set_VMSC00000.zip -d data
           rm 202305010900_U2OS_small_set_VMSC00000.zip
+
+      - name: Log into Container registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run pipeline with test data
         run: |
