@@ -38,10 +38,19 @@ jobs:
       - name: Disk space cleanup
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
-      - name: Run pipeline with test data
-        # TODO nf-core: You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
+
+      - name: Download test data
         run: |
-          #disable this for now, until I figure out the best way to pull the test data
-          #nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p data/example_analysis_algorithm
+
+          wget https://raw.githubusercontent.com/Vizgen/vizgen-postprocessing/develop/example_analysis_algorithm/cellpose_default_1_ZLevel.json
+          mv cellpose_default_1_ZLevel.json data/example_analysis_algorithm
+
+          wget https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip
+          unzip 202305010900_U2OS_small_set_VMSC00000.zip -d data
+          rm 202305010900_U2OS_small_set_VMSC00000.zip
+
+      - name: Run pipeline with test data
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
