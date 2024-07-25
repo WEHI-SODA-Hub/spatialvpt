@@ -7,7 +7,7 @@
                         {
                             "id": "small_set"
                         },
-                        "segmentation_specification.json:md5,bfb1b557010873575801c4b347fb0863"
+                        "segmentation_specification.json:md5,cecc5abf184cf6434034650735afea07"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "small_set"
                         },
-                        "segmentation_specification.json:md5,bfb1b557010873575801c4b347fb0863"
+                        "segmentation_specification.json:md5,cecc5abf184cf6434034650735afea07"
                     ]
                 ],
                 "versions": [
@@ -30,6 +30,6 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.1"
         },
-        "timestamp": "2024-07-25T09:42:52.108519302"
+        "timestamp": "2024-07-25T11:11:53.210220656"
     }
 }

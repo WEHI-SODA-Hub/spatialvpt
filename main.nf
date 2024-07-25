@@ -47,7 +47,7 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
     )
 
     emit:
-    specification_json = SPATIALSEGMENTATION.out.specification_json // channel: /path/to/multiqc_report.html
+    versions = SPATIALSEGMENTATION.out.versions // temporary
 
 }
 /*
