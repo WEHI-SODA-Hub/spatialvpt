@@ -4,10 +4,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { PREPARE_SEGMENTATION   } from '../modules/local/vpt/prepare-segmentation/main'
-include { paramsSummaryMap       } from 'plugin/nf-validation'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
+include { PREPARE_SEGMENTATION     } from '../modules/local/vpt/prepare-segmentation/main'
+include { RUN_SEGMENTATION_ON_TILE } from '../modules/local/vpt/run-segmentation-on-tile/main'
+include { paramsSummaryMap         } from 'plugin/nf-validation'
+include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,6 +35,29 @@ workflow SPATIALSEGMENTATION {
         ch_samplesheet,
         tile_size,
         tile_overlap
+    )
+
+    // Create list sequence of 0..N tiles
+    PREPARE_SEGMENTATION.out.specification_json
+        .map { meta, json -> json }
+        .splitJson(path: 'window_grid' )
+        .filter { it.key == 'num_tiles' }
+        .map { it.value as Integer }
+        .flatMap { num -> (0..num-1).toList() }
+        .set{ ch_tiles }
+
+    // Combine specification json files with tile ID
+    PREPARE_SEGMENTATION.out.specification_json
+        .combine(ch_tiles)
+        .set{ ch_segment_tiles }
+
+    //
+    // MODULE: Run vpt run-segmentation-on-tile
+    //
+    RUN_SEGMENTATION_ON_TILE(
+        ch_segment_tiles,
+        PREPARE_SEGMENTATION.out.input_images,
+        PREPARE_SEGMENTATION.out.algorithm_json
     )
 
     //

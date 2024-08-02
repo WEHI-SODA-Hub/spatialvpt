@@ -1,20 +1,18 @@
-process PREPARE_SEGMENTATION {
+process RUN_SEGMENTATION_ON_TILE {
     tag "$meta.id"
-    label 'process_small'
+    label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' :
         'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(algorithm_json), path(input_images), path(um_to_mosaic_file)
-    val(tile_size)
-    val(tile_overlap)
+    tuple val(meta), path(segmentation_spec), val(tile_index)
+    path(input_images)
+    path(algorithm_json)
 
     output:
-    tuple val(meta), path("*.json"), emit: specification_json
-    path(input_images), emit: input_images
-    path(algorithm_json), emit: algorithm_json
+    tuple val(meta), path("result_tiles/*.parquet"), emit: segmented_tile
     path  "versions.yml"          , emit: versions
 
     when:
@@ -24,14 +22,10 @@ process PREPARE_SEGMENTATION {
     def args = task.ext.args ?: ''
     """
     vpt --verbose \\
-        prepare-segmentation \\
+        run-segmentation-on-tile \\
         $args \\
-        --segmentation-algorithm $algorithm_json \\
-        --input-images $input_images \\
-        --input-micron-to-mosaic $um_to_mosaic_file \\
-        --output-path . \\
-        --tile-size $tile_size \\
-        --tile-overlap $tile_overlap
+        --input-segmentation-parameters $segmentation_spec \\
+        --tile-index $tile_index
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

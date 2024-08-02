@@ -1,0 +1,33 @@
+nextflow_process {
+
+    name "Test Process RUN_SEGMENTATION_ON_TILE"
+    script "modules/local/vpt/run-segmentation-on-tile/main.nf"
+    process "RUN_SEGMENTATION_ON_TILE"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "results"
+            }
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'small_set' ],
+                    [ file('${projectDir}/data/segmentation_specification.json', checkIfExists: true) ],
+                    0
+                ])
+                input[1] = [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ]
+                input[2] = [ file('${projectDir}/data/example_analysis_algorithm/cellpose_default_1_ZLevel.json', checkIfExists: true) ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}
