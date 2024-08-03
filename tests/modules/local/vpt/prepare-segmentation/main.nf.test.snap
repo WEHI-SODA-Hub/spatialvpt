@@ -7,7 +7,7 @@
                         {
                             "id": "small_set"
                         },
-                        "segmentation_specification.json:md5,1174f918af08958776582fedb42e3505"
+                        "segmentation_specification.json:md5,bd00dc1ae5fed15050383f4bef938c0a"
                     ]
                 ],
                 "1": [
@@ -57,10 +57,10 @@
                 "3": [
                     "versions.yml:md5,da001a9b9e4e5a439bea2fe6ed119ec8"
                 ],
-                "algporithm_json": [
+                "algorithm_json": [
                     "cellpose_default_1_ZLevel.json:md5,2edc0ac26137ac565fff28033c5362b5"
                 ],
-                "imput_images": [
+                "input_images": [
                     [
                         "manifest.json:md5,a70a47319151f7dda86d8bf09653ee73",
                         "micron_to_mosaic_pixel_transform.csv:md5,5f25f33f46e9eecad86ab86a1924fef5",
@@ -106,7 +106,7 @@
                         {
                             "id": "small_set"
                         },
-                        "segmentation_specification.json:md5,1174f918af08958776582fedb42e3505"
+                        "segmentation_specification.json:md5,bd00dc1ae5fed15050383f4bef938c0a"
                     ]
                 ],
                 "versions": [
@@ -118,6 +118,6 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.1"
         },
-        "timestamp": "2024-08-02T16:49:40.766311796"
+        "timestamp": "2024-08-03T12:02:05.544417854"
     }
 }
