@@ -7,7 +7,7 @@ process PREPARE_SEGMENTATION {
         'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(algorithm_json), path(input_images), path(um_to_mosaic_file)
+    tuple val(meta), path(algorithm_json), path(input_images), path(um_to_mosaic_file), path(detected_transcripts)
     val(tile_size)
     val(tile_overlap)
 

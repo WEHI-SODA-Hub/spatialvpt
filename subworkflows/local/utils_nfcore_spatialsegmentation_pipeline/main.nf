@@ -149,7 +149,7 @@ workflow PIPELINE_COMPLETION {
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
-    def (meta, algorithm, images, mosaic_file) = input
+    def (meta, algorithm, images, mosaic_file, detected_transcripts) = input
     if (meta.size() != 1) {
         error("Only one sample can be processed via the pipeline. Please check your samplesheet")
     }

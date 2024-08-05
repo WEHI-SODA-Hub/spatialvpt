@@ -4,12 +4,13 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { PREPARE_SEGMENTATION     } from '../modules/local/vpt/prepare-segmentation/main'
-include { RUN_SEGMENTATION_ON_TILE } from '../modules/local/vpt/run-segmentation-on-tile/main'
+include { PREPARE_SEGMENTATION      } from '../modules/local/vpt/prepare-segmentation/main'
+include { RUN_SEGMENTATION_ON_TILE  } from '../modules/local/vpt/run-segmentation-on-tile/main'
 include { COMPILE_TILE_SEGMENTATION } from '../modules/local/vpt/compile-tile-segmentation/main'
-include { paramsSummaryMap         } from 'plugin/nf-validation'
-include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
+include { PARTITION_TRANSCRIPTS     } from '../modules/local/vpt/partition-transcripts/main'
+include { paramsSummaryMap          } from 'plugin/nf-validation'
+include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +78,30 @@ workflow SPATIALSEGMENTATION {
         ch_segmented_tiles
     )
 
+    // Extract detected transcripts from samplesheet
+    ch_samplesheet
+        .map { meta, alg_json, images, mosaic, detected_txs ->
+              detected_txs }
+        .set{ ch_detected_txs }
+
+    // Combine detected transcripts with micron space file
+    // to create input for partition-transcripts step
+    COMPILE_TILE_SEGMENTATION.out.micron_space
+        .combine(ch_detected_txs)
+        .set{ ch_partition_txs_input }
+
+    //
+    // MODULE: Run vpt partition-transcripts
+    //
+    PARTITION_TRANSCRIPTS(
+        ch_partition_txs_input
+    )
+
+    ch_segmentation_output =
+        COMPILE_TILE_SEGMENTATION.out.micron_space
+
+    ch_transcripts =
+        PARTITION_TRANSCRIPTS.out.transcripts
     //
     // Collate and save software versions
     //
@@ -89,6 +114,8 @@ workflow SPATIALSEGMENTATION {
         ).set { ch_collated_versions }
 
     emit:
+    segmentation   = ch_segmentation_output
+    transcripts    = ch_transcripts
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 

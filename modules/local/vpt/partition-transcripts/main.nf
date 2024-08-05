@@ -1,4 +1,4 @@
-process COMPILE_TILE_SEGMENTATION {
+process PARTITION_TRANSCRIPTS {
     tag "$meta.id"
     label 'process_large'
 
@@ -7,12 +7,10 @@ process COMPILE_TILE_SEGMENTATION {
         'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(segmentation_spec), path(images), path(algorithm_json)
-    path(segmentation_tiles)
+    tuple val(meta), path(micron_space), path(input_transcripts)
 
     output:
-    tuple val(meta), path("*_mosaic_space.parquet"), emit: mosaic_space
-    tuple val(meta), path("*_micron_space.parquet"), emit: micron_space
+    tuple val(meta), path("*.csv"), emit: transcripts
     path  "versions.yml"          , emit: versions
 
     when:
@@ -21,15 +19,13 @@ process COMPILE_TILE_SEGMENTATION {
     script:
     def args = task.ext.args ?: ''
     """
-    mkdir result_tiles
-    for segment in ${segmentation_tiles}; do
-        cp -d \$segment result_tiles
-    done
-
     vpt --verbose \\
-        compile-tile-segmentation \\
+        partition-transcripts \\
         $args \\
-        --input-segmentation-parameters $segmentation_spec
+        --input-boundaries $micron_space \\
+        --input-transcripts $input_transcripts \\
+        --output-entity-by-gene cell_by_gene_repartitioned.csv \\
+        --output-transcripts detected_transcripts_repartitioned.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

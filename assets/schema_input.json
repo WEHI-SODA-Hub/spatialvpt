@@ -32,6 +32,13 @@
                 "exists": true,
                 "pattern": "^\\S+\\.csv$",
                 "errorMessage": "Mosaic pixel transformation matrix file file with .csv extension must be provided and must exist"
+            },
+            "detected_transcripts": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.csv$",
+                "errorMessage": "Detected transcripts file with .csv extension must be provided and must exist"
             }
         },
         "required": ["sample", "algorithm", "images", "mosaic_file"]

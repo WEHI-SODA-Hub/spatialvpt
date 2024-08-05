@@ -1,0 +1,41 @@
+{
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        [
+                            "cell_by_gene_repartitioned.csv:md5,aceba0f6ed50361af265b04db6b8b7f8",
+                            "detected_transcripts_repartitioned.csv:md5,6d4441b9fd1b8c4bfb6945d00f89c569"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,c6227a7da97aad53d158177b0b2f2722"
+                ],
+                "transcripts": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        [
+                            "cell_by_gene_repartitioned.csv:md5,aceba0f6ed50361af265b04db6b8b7f8",
+                            "detected_transcripts_repartitioned.csv:md5,6d4441b9fd1b8c4bfb6945d00f89c569"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,c6227a7da97aad53d158177b0b2f2722"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.1"
+        },
+        "timestamp": "2024-08-05T16:15:06.899851245"
+    }
+}
