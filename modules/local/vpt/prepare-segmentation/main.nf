@@ -12,9 +12,7 @@ process PREPARE_SEGMENTATION {
     val(tile_overlap)
 
     output:
-    tuple val(meta), path("*.json"), emit: specification_json
-    path(input_images), emit: input_images
-    path(algorithm_json), emit: algorithm_json
+    tuple val(meta), path("*.json"), path(input_images), path(algorithm_json), emit: segmentation_files
     path  "versions.yml"          , emit: versions
 
     when:

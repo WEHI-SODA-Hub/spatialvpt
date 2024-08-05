@@ -15,10 +15,10 @@ nextflow_process {
                 input[0] = Channel.of([
                     [ id: 'small_set' ],
                     [ file('${projectDir}/data/segmentation_specification.json', checkIfExists: true) ],
+                    [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ],
+                    [ file('${projectDir}/data/example_analysis_algorithm/cellpose_default_1_ZLevel.json', checkIfExists: true) ],
                     0
                 ])
-                input[1] = [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ]
-                input[2] = [ file('${projectDir}/data/example_analysis_algorithm/cellpose_default_1_ZLevel.json', checkIfExists: true) ]
                 """
             }
         }

@@ -18,8 +18,8 @@ nextflow_process {
                     [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ],
                     [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv', checkIfExists: true) ]
                 ])
-                input[1] = 4096
-                input[2] = 400
+                input[1] = 2048
+                input[2] = 200
                 """
             }
         }

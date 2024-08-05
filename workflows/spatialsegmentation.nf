@@ -38,8 +38,11 @@ workflow SPATIALSEGMENTATION {
     )
 
     // Create list sequence of 0..N tiles
-    PREPARE_SEGMENTATION.out.specification_json
-        .map { meta, json -> json }
+    // TODO: determine whether multi-sample functionality
+    // is required -- with this current structure, we can
+    // only support processing a single sample at a time
+    PREPARE_SEGMENTATION.out.segmentation_files
+        .map { meta, seg_json, images, alg_alg -> seg_json }
         .splitJson(path: 'window_grid' )
         .filter { it.key == 'num_tiles' }
         .map { it.value as Integer }
@@ -47,7 +50,7 @@ workflow SPATIALSEGMENTATION {
         .set{ ch_tiles }
 
     // Combine specification json files with tile ID
-    PREPARE_SEGMENTATION.out.specification_json
+    PREPARE_SEGMENTATION.out.segmentation_files
         .combine(ch_tiles)
         .set{ ch_segment_tiles }
 
@@ -55,9 +58,7 @@ workflow SPATIALSEGMENTATION {
     // MODULE: Run vpt run-segmentation-on-tile
     //
     RUN_SEGMENTATION_ON_TILE(
-        ch_segment_tiles,
-        PREPARE_SEGMENTATION.out.input_images,
-        PREPARE_SEGMENTATION.out.algorithm_json
+        ch_segment_tiles
     )
 
     //
