@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process PREPARE_SEGMENTATION"
-    script "modules/local/vpt/prepare-segmentation/main.nf"
-    process "PREPARE_SEGMENTATION"
+    name "Test Process COMPILE_TILE_SEGMENTATION"
+    script "modules/local/vpt/compile-tile-segmentation/main.nf"
+    process "COMPILE_TILE_SEGMENTATION"
 
     test("Should run without failures") {
 
@@ -14,12 +14,11 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'small_set' ],
-                    [ file('${projectDir}/data/example_analysis_algorithm/cellpose_default_1_ZLevel.json', checkIfExists: true) ],
+                    [ file('${projectDir}/tests/data/segmentation_specification.json', checkIfExists: true) ],
                     [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ],
-                    [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv', checkIfExists: true) ]
+                    [ file('${projectDir}/data/example_analysis_algorithm/cellpose_default_1_ZLevel.json', checkIfExists: true) ]
                 ])
-                input[1] = 2048
-                input[2] = 200
+                input[1] = Channel.fromPath('${projectDir}/tests/data/result_tiles/cell_*.parquet').collect()
                 """
             }
         }

@@ -1,0 +1,41 @@
+{
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        [
+                            "cellpose_micron_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f",
+                            "cellpose_mosaic_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,3a96416e77ec12ca664b4ef357572acc"
+                ],
+                "segmented_tiles": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        [
+                            "cellpose_micron_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f",
+                            "cellpose_mosaic_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,3a96416e77ec12ca664b4ef357572acc"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.1"
+        },
+        "timestamp": "2024-08-05T15:00:08.584128689"
+    }
+}

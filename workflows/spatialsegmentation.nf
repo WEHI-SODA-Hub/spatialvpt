@@ -6,6 +6,7 @@
 
 include { PREPARE_SEGMENTATION     } from '../modules/local/vpt/prepare-segmentation/main'
 include { RUN_SEGMENTATION_ON_TILE } from '../modules/local/vpt/run-segmentation-on-tile/main'
+include { COMPILE_TILE_SEGMENTATION } from '../modules/local/vpt/compile-tile-segmentation/main'
 include { paramsSummaryMap         } from 'plugin/nf-validation'
 include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
@@ -52,13 +53,28 @@ workflow SPATIALSEGMENTATION {
     // Combine specification json files with tile ID
     PREPARE_SEGMENTATION.out.segmentation_files
         .combine(ch_tiles)
-        .set{ ch_segment_tiles }
+        .set{ ch_tile_segments }
 
     //
     // MODULE: Run vpt run-segmentation-on-tile
     //
     RUN_SEGMENTATION_ON_TILE(
-        ch_segment_tiles
+        ch_tile_segments
+    )
+
+    /// collect segmented tiles
+    RUN_SEGMENTATION_ON_TILE.out.segmented_tile
+        .map { meta, seg_tile -> seg_tile }
+        .flatten()
+        .collect()
+        .set{ ch_segmented_tiles }
+
+    //
+    // MODULE: Run vpt compile-tile-segmentation
+    //
+    COMPILE_TILE_SEGMENTATION(
+        PREPARE_SEGMENTATION.out.segmentation_files,
+        ch_segmented_tiles
     )
 
     //
