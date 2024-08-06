@@ -48,8 +48,9 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
 
     emit:
     segmentation = SPATIALSEGMENTATION.out.segmentation
+    metadata     = SPATIALSEGMENTATION.out.metadata
     transcripts  = SPATIALSEGMENTATION.out.transcripts
-    versions     = SPATIALSEGMENTATION.out.versions // temporary
+    versions     = SPATIALSEGMENTATION.out.versions
 
 }
 /*

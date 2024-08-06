@@ -8,6 +8,7 @@ include { PREPARE_SEGMENTATION      } from '../modules/local/vpt/prepare-segment
 include { RUN_SEGMENTATION_ON_TILE  } from '../modules/local/vpt/run-segmentation-on-tile/main'
 include { COMPILE_TILE_SEGMENTATION } from '../modules/local/vpt/compile-tile-segmentation/main'
 include { PARTITION_TRANSCRIPTS     } from '../modules/local/vpt/partition-transcripts/main'
+include { DERIVE_ENTITY_METADATA    } from '../modules/local/vpt/derive-entity-metadata/main'
 include { paramsSummaryMap          } from 'plugin/nf-validation'
 include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
@@ -78,10 +79,16 @@ workflow SPATIALSEGMENTATION {
         ch_segmented_tiles
     )
 
+    //
+    // MODULE: Run vpt derive-entity-metadata
+    //
+    DERIVE_ENTITY_METADATA(
+        COMPILE_TILE_SEGMENTATION.out.micron_space
+    )
+
     // Extract detected transcripts from samplesheet
     ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs ->
-              detected_txs }
+        .map { meta, alg_json, images, mosaic, detected_txs -> detected_txs }
         .set{ ch_detected_txs }
 
     // Combine detected transcripts with micron space file
@@ -97,11 +104,16 @@ workflow SPATIALSEGMENTATION {
         ch_partition_txs_input
     )
 
+    // Output channels
     ch_segmentation_output =
         COMPILE_TILE_SEGMENTATION.out.micron_space
 
+    ch_entity_metadata =
+        DERIVE_ENTITY_METADATA.out.entity_metadata
+
     ch_transcripts =
         PARTITION_TRANSCRIPTS.out.transcripts
+
     //
     // Collate and save software versions
     //
@@ -115,6 +127,7 @@ workflow SPATIALSEGMENTATION {
 
     emit:
     segmentation   = ch_segmentation_output
+    metadata       = ch_entity_metadata
     transcripts    = ch_transcripts
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
