@@ -1,2 +1,2 @@
-sample,algorithm,images,mosaic_file,detected_transcripts
-sample,/path/to/algorithm.json,/path/to/images,/path/to/micron_to_mosaic_pixel_transform.csv,/path/to/detected_transcripts.csv
+sample,algorithm,images,mosaic_file,detected_transcripts,input_vzg
+sample,/path/to/algorithm.json,/path/to/images,/path/to/micron_to_mosaic_pixel_transform.csv,/path/to/detected_transcripts.csv,/path/to/region.vzg

@@ -25,7 +25,7 @@ process PARTITION_TRANSCRIPTS {
         --input-boundaries $micron_space \\
         --input-transcripts $input_transcripts \\
         --output-entity-by-gene cell_by_gene_repartitioned.csv \\
-        --output-transcripts detected_transcripts_repartitioned.csv
+        --output-transcripts cell_by_gene_repartitioned.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

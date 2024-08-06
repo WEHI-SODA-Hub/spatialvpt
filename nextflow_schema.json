@@ -60,6 +60,12 @@
                     "description": "Overlap between tiles.",
                     "default": 400,
                     "fa_icon": "fas fa-th-large"
+                },
+                "update_vzg": {
+                    "type": "boolean",
+                    "description": "Create updated VZG file after segmentation.",
+                    "default": true,
+                    "fa_icon": "fas fa-sync"
                 }
             }
         },

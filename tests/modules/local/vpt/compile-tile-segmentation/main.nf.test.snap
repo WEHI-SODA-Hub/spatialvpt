@@ -7,24 +7,34 @@
                         {
                             "id": "small_set"
                         },
-                        [
-                            "cellpose_micron_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f",
-                            "cellpose_mosaic_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f"
-                        ]
+                        "cellpose2_mosaic_space.parquet:md5,6976ef94ae61cc909f5d86751885e47b"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,3a96416e77ec12ca664b4ef357572acc"
-                ],
-                "segmented_tiles": [
                     [
                         {
                             "id": "small_set"
                         },
-                        [
-                            "cellpose_micron_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f",
-                            "cellpose_mosaic_space.parquet:md5,9e5728f75551a877cf52ba2f63eaa25f"
-                        ]
+                        "cellpose2_micron_space.parquet:md5,b2fd08c50d641efab7e0811e3cade36f"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,3a96416e77ec12ca664b4ef357572acc"
+                ],
+                "micron_space": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cellpose2_micron_space.parquet:md5,b2fd08c50d641efab7e0811e3cade36f"
+                    ]
+                ],
+                "mosaic_space": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cellpose2_mosaic_space.parquet:md5,6976ef94ae61cc909f5d86751885e47b"
                     ]
                 ],
                 "versions": [
@@ -36,6 +46,6 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.1"
         },
-        "timestamp": "2024-08-05T15:00:08.584128689"
+        "timestamp": "2024-08-09T13:06:15.001243575"
     }
 }

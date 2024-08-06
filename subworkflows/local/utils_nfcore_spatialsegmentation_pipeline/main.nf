@@ -38,6 +38,7 @@ workflow PIPELINE_INITIALISATION {
     input             //  string: Path to input samplesheet
     tile_size         // integer: Pixels tile width and height
     tile_overlap      // integer: Overlap between adjacent tiles
+    update_vzg        // boolean: Whether to create an updated VZG file after segmentation
 
     main:
 
@@ -96,6 +97,7 @@ workflow PIPELINE_INITIALISATION {
     samplesheet = ch_samplesheet
     tile_size   = tile_size
     tile_olap   = tile_overlap
+    update_vzg  = update_vzg
     versions    = ch_versions
 }
 
@@ -149,7 +151,7 @@ workflow PIPELINE_COMPLETION {
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
-    def (meta, algorithm, images, mosaic_file, detected_transcripts) = input
+    def (meta, algorithm, images, mosaic_file, detected_txs, vzg) = input
     if (meta.size() != 1) {
         error("Only one sample can be processed via the pipeline. Please check your samplesheet")
     }

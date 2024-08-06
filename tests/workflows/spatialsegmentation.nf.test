@@ -1,8 +1,8 @@
-nextflow_process {
+nextflow_workflow {
 
-    name "Test Process PREPARE_SEGMENTATION"
-    script "modules/local/vpt/prepare-segmentation/main.nf"
-    process "PREPARE_SEGMENTATION"
+    name "Test Workflow SPATIALSEGMENTATION"
+    script "workflows/spatialsegmentation.nf"
+    workflow "SPATIALSEGMENTATION"
 
     test("Should run without failures") {
 
@@ -10,7 +10,7 @@ nextflow_process {
             params {
                 outdir = "tests/results"
             }
-            process {
+            workflow {
                 """
                 input[0] = Channel.of([
                     [ id: 'small_set' ],
@@ -22,13 +22,14 @@ nextflow_process {
                 ])
                 input[1] = 2400
                 input[2] = 200
+                input[3] = true
                 """
             }
         }
 
         then {
-            assert process.success
-            assert snapshot(process.out).match()
+            assert workflow.success
+            assert snapshot(workflow.out).match()
         }
 
     }

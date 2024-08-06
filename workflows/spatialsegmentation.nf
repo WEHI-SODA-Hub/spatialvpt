@@ -9,6 +9,7 @@ include { RUN_SEGMENTATION_ON_TILE  } from '../modules/local/vpt/run-segmentatio
 include { COMPILE_TILE_SEGMENTATION } from '../modules/local/vpt/compile-tile-segmentation/main'
 include { PARTITION_TRANSCRIPTS     } from '../modules/local/vpt/partition-transcripts/main'
 include { DERIVE_ENTITY_METADATA    } from '../modules/local/vpt/derive-entity-metadata/main'
+include { UPDATE_VZG                } from '../modules/local/vpt/update-vzg/main'
 include { paramsSummaryMap          } from 'plugin/nf-validation'
 include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
@@ -25,6 +26,7 @@ workflow SPATIALSEGMENTATION {
     ch_samplesheet // channel: samplesheet read in from --input
     tile_size
     tile_overlap
+    update_vzg
 
     main:
 
@@ -88,7 +90,7 @@ workflow SPATIALSEGMENTATION {
 
     // Extract detected transcripts from samplesheet
     ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs -> detected_txs }
+        .map { meta, alg_json, images, mosaic, detected_txs, vzg -> detected_txs }
         .set{ ch_detected_txs }
 
     // Combine detected transcripts with micron space file
@@ -111,8 +113,32 @@ workflow SPATIALSEGMENTATION {
     ch_entity_metadata =
         DERIVE_ENTITY_METADATA.out.entity_metadata
 
-    ch_transcripts =
+    ch_entity_by_gene =
         PARTITION_TRANSCRIPTS.out.transcripts
+
+    ch_vzg = Channel.empty()
+    if (update_vzg) {
+        // Put together input for update-vzg
+        ch_samplesheet.map {
+                meta, alg_json, images, mosaic, detected_txs, vzg ->
+                [meta, vzg]
+            }
+            .join(ch_segmentation_output)
+            .join(ch_entity_by_gene)
+            .join(ch_entity_metadata)
+            .flatten()
+            .toList()
+            .set{ ch_update_vzg_input }
+
+        //
+        // MODULE: Run vpt update-vzg
+        //
+        UPDATE_VZG(
+            ch_update_vzg_input
+        )
+
+        ch_vzg = UPDATE_VZG.out.vzg_file
+    }
 
     //
     // Collate and save software versions
@@ -128,7 +154,8 @@ workflow SPATIALSEGMENTATION {
     emit:
     segmentation   = ch_segmentation_output
     metadata       = ch_entity_metadata
-    transcripts    = ch_transcripts
+    entity_by_gene = ch_entity_by_gene
+    vzg            = ch_vzg
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 

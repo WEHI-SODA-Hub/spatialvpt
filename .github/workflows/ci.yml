@@ -44,8 +44,8 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           mkdir -p data/example_analysis_algorithm
 
-          wget -q https://raw.githubusercontent.com/Vizgen/vizgen-postprocessing/develop/example_analysis_algorithm/cellpose_default_1_ZLevel.json
-          mv cellpose_default_1_ZLevel.json data/example_analysis_algorithm
+          wget -q https://raw.githubusercontent.com/Vizgen/vpt-plugin-cellpose2/develop/example_analysis_algorithm/cellpose2_cyto2.json
+          mv cellpose2_cyto2.json data/example_analysis_algorithm
 
           wget -q https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip
           unzip 202305010900_U2OS_small_set_VMSC00000.zip -d data

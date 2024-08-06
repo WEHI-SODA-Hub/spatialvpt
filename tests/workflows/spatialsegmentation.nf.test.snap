@@ -1,0 +1,83 @@
+{
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cellpose2_micron_space.parquet:md5,6ce7a04cd49e0cffec302076f5427e1c"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cell_metadata_resegmented.csv:md5,905598d36eafd258076a15e89fe88fc3"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cell_by_gene_repartitioned.csv:md5,a292e7f60ba799156a33c24cf3da81bc"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "202305010900_U2OS_small_set_VMSC00000_region_0_resegmented.vzg:md5,0425f6063d31497ac03bf396ad6b8961"
+                    ]
+                ],
+                "4": [
+                    
+                ],
+                "entity_by_gene": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cell_by_gene_repartitioned.csv:md5,a292e7f60ba799156a33c24cf3da81bc"
+                    ]
+                ],
+                "metadata": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cell_metadata_resegmented.csv:md5,905598d36eafd258076a15e89fe88fc3"
+                    ]
+                ],
+                "segmentation": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "cellpose2_micron_space.parquet:md5,6ce7a04cd49e0cffec302076f5427e1c"
+                    ]
+                ],
+                "versions": [
+                    
+                ],
+                "vzg": [
+                    [
+                        {
+                            "id": "small_set"
+                        },
+                        "202305010900_U2OS_small_set_VMSC00000_region_0_resegmented.vzg:md5,0425f6063d31497ac03bf396ad6b8961"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.1"
+        },
+        "timestamp": "2024-08-09T14:26:38.015501875"
+    }
+}

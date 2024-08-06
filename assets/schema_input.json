@@ -39,6 +39,13 @@
                 "exists": true,
                 "pattern": "^\\S+\\.csv$",
                 "errorMessage": "Detected transcripts file with .csv extension must be provided and must exist"
+            },
+            "input_vzg": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.vzg$",
+                "errorMessage": "Input VZG file with .vzg extension must be provided and must exist"
             }
         },
         "required": ["sample", "algorithm", "images", "mosaic_file"]

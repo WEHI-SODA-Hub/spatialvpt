@@ -1,18 +1,16 @@
-process PREPARE_SEGMENTATION {
+process UPDATE_VZG {
     tag "$meta.id"
-    label 'process_small'
+    label 'process_large'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' :
         'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(algorithm_json), path(input_images), path(um_to_mosaic_file), path(detected_transcripts), path(input_vzg)
-    val(tile_size)
-    val(tile_overlap)
+    tuple val(meta), path(input_vzg), path(micron_space), path(entity_by_gene), path(metadata)
 
     output:
-    tuple val(meta), path("*.json"), path(input_images), path(algorithm_json), emit: segmentation_files
+    tuple val(meta), path("*.vzg"), emit: vzg_file
     path  "versions.yml"          , emit: versions
 
     when:
@@ -20,16 +18,16 @@ process PREPARE_SEGMENTATION {
 
     script:
     def args = task.ext.args ?: ''
+    def vzg_name = input_vzg.getSimpleName()
     """
     vpt --verbose \\
-        prepare-segmentation \\
+        update-vzg \\
         $args \\
-        --segmentation-algorithm $algorithm_json \\
-        --input-images $input_images \\
-        --input-micron-to-mosaic $um_to_mosaic_file \\
-        --output-path . \\
-        --tile-size $tile_size \\
-        --tile-overlap $tile_overlap
+        --input-boundaries $micron_space \\
+        --input-entity-by-gene $entity_by_gene \\
+        --input-metadata $metadata \\
+        --input-vzg $input_vzg \\
+        --output-vzg ${vzg_name}_resegmented.vzg
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
