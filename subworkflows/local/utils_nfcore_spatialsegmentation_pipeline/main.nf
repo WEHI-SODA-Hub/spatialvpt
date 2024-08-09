@@ -151,6 +151,7 @@ workflow PIPELINE_COMPLETION {
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
+    // TODO: add argument that handles regex for mosaic file
     def (meta, algorithm, images, mosaic_file, detected_txs, vzg) = input
     if (meta.size() != 1) {
         error("Only one sample can be processed via the pipeline. Please check your samplesheet")

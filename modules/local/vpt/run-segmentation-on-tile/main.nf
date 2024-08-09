@@ -17,6 +17,9 @@ process RUN_SEGMENTATION_ON_TILE {
     task.ext.when == null || task.ext.when
 
     script:
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
+    }
     def args = task.ext.args ?: ''
     """
     vpt --verbose \\
