@@ -13,20 +13,20 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "algorithm": {
+            "algorithm_json": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.json$",
                 "errorMessage": "Algorithm file with .json extension must be provided and must exist"
             },
-            "images": {
+            "images_dir": {
                 "type": "string",
                 "format": "directory-path",
                 "exists": true,
                 "errorMessage": "Images folder must be provided and must exist"
             },
-            "mosaic_file": {
+            "um_to_mosaic_file": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
@@ -48,6 +48,6 @@
                 "errorMessage": "Input VZG file with .vzg extension must be provided and must exist"
             }
         },
-        "required": ["sample", "algorithm", "images", "mosaic_file"]
+        "required": ["sample", "images_dir"]
     }
 }

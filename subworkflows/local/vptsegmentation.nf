@@ -149,6 +149,6 @@ workflow VPTSEGMENTATION {
     entity_by_gene = ch_entity_by_gene
     vzg            = ch_vzg
 
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    versions       = ch_collated_versions // channel: [ path(versions.yml) ]
 }
 
