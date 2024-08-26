@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process VPT_GENERATESEGMENTATIONMETRICS"
+    script "modules/local/vpt/generatesegmentationmetrics/generatesegmentationmetrics.nf"
+    process "VPT_GENERATESEGMENTATIONMETRICS"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "tests/results"
+            }
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'small_set' ],
+                    [ file('${projectDir}/tests/data/cell_by_gene_repartitioned.csv', checkIfExists: true) ],
+                    [ file('${projectDir}/tests/data/cell_metadata_resegmented.csv', checkIfExists: true) ],
+                    [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/detected_transcripts.csv', checkIfExists: true) ],
+                    [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ],
+                    [ file('${projectDir}/tests/data/cellpose_micron_space.parquet', checkIfExists: true) ],
+                    [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv', checkIfExists: true) ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}

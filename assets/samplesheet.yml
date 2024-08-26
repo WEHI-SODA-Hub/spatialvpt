@@ -1,6 +1,6 @@
 - sample: "sample_name"
   algorithm_json: "/path/to/algorithm.json"
   images_dir: "/path/to/images"
-  um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv" 
+  um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv"
   detected_transcripts: "/path/to/detected_transcripts.csv"
   input_vzg: "/path/to/sample.vzg"

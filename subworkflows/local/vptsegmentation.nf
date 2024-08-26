@@ -132,6 +132,27 @@ workflow VPTSEGMENTATION {
         ch_vzg = UPDATE_VZG.out.vzg_file
     }
 
+    // get transcripts channel for downstream output
+    ch_samplesheet.map {
+            meta, alg_json, images, mosaic, detected_txs, vzg ->
+            [meta, detected_txs]
+        }
+        .set{ ch_transcripts }
+
+    // get images channel for downstream output
+    ch_samplesheet.map {
+            meta, alg_json, images, mosaic, detected_txs, vzg ->
+            [meta, images]
+        }
+        .set{ ch_images}
+
+    // get micron_to_mosaic channel for downstream output
+    ch_samplesheet.map {
+            meta, alg_json, images, mosaic, detected_txs, vzg ->
+            [meta, mosaic]
+        }
+        .set{ ch_mosaic }
+
     //
     // Collate and save software versions
     //
@@ -144,9 +165,12 @@ workflow VPTSEGMENTATION {
         ).set { ch_collated_versions }
 
     emit:
-    segmentation   = ch_segmentation_output
-    metadata       = ch_entity_metadata
     entity_by_gene = ch_entity_by_gene
+    metadata       = ch_entity_metadata
+    transcripts    = ch_transcripts
+    images         = ch_images
+    segmentation   = ch_segmentation_output
+    mosaic         = ch_mosaic
     vzg            = ch_vzg
 
     versions       = ch_collated_versions // channel: [ path(versions.yml) ]
