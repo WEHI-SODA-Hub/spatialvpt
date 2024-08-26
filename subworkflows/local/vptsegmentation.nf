@@ -25,11 +25,17 @@ workflow VPTSEGMENTATION {
 
     ch_versions = Channel.empty()
 
+    // Extract detected transcripts from samplesheet
+    ch_samplesheet
+        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+            [meta, alg_json, images, mosaic, detected_txs, vzg] }
+        .set{ ch_segmentation_input }
+
     //
     // MODULE: Run vpt prepare-segmentation
     //
     PREPARE_SEGMENTATION (
-        ch_samplesheet,
+        ch_segmentation_input,
         tile_size,
         tile_overlap
     )
@@ -82,7 +88,8 @@ workflow VPTSEGMENTATION {
 
     // Extract detected transcripts from samplesheet
     ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs, vzg -> detected_txs }
+        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+            detected_txs }
         .set{ ch_detected_txs }
 
     // Combine detected transcripts with micron space file
@@ -109,10 +116,10 @@ workflow VPTSEGMENTATION {
         PARTITION_TRANSCRIPTS.out.transcripts
 
     ch_vzg = Channel.empty()
-    if (update_vzg) {
+    if (update_vzg.value) {
         // Put together input for update-vzg
         ch_samplesheet.map {
-                meta, alg_json, images, mosaic, detected_txs, vzg ->
+                meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
                 [meta, vzg]
             }
             .join(ch_segmentation_output)
@@ -134,21 +141,22 @@ workflow VPTSEGMENTATION {
 
     // get transcripts channel for downstream output
     ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg ->
+            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
             [meta, detected_txs]
         }
         .set{ ch_transcripts }
 
     // get images channel for downstream output
     ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg ->
+            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+            [meta, detected_txs]
             [meta, images]
         }
         .set{ ch_images}
 
     // get micron_to_mosaic channel for downstream output
     ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg ->
+            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
             [meta, mosaic]
         }
         .set{ ch_mosaic }

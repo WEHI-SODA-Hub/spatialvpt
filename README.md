@@ -27,31 +27,73 @@
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
 First, prepare a samplesheet with your input data that looks as follows:
 
-`samplesheet.csv`:
+`samplesheet.yml`:
 
-```csv
-sample,algorithm,images,mosaic_file
-small_set,cellpose_default_1_ZLevel.json,202305010900_U2OS_small_set_VMSC00000/region_0/images,202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv
+```yaml
+- sample: "sample_name"
+  algorithm_json: "/path/to/algorithm.json"
+  images_dir: "/path/to/images"
+  um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv"
+  detected_transcripts: "/path/to/detected_transcripts.csv"
+  input_vzg: "/path/to/sample.vzg"
+  metadata: "/path/to/entity_metadata.csv"
+  entity_by_gene: "/path/to/entity_by_gene.csv"
+  boundaries: "/path/to/segmentation.parquet"
 ```
 
-Each row represents a region to perform segmentation on.
+The `metadata`, `entity_by_gene` and `boundaries` values are only required if running in `report_only` mode.
 
--->
+Note that the `algorithm_json` file is temperamental. Check the [Vizgen documentation](https://vizgen.github.io/vizgen-postprocessing/segmentation_options/json_file_format.html) on the requirements.
 
-Now, you can run the pipeline using:
+Currently, only one sample can be processed at one time.
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
+To run cell segmentation via VPT, you can run the pipeline using:
 
 ```bash
 nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
    -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+   --input samplesheet.yml \
+   --outdir <OUTDIR> \
+   --tile_size <tile_size> \
+   --tile_overlap <tile_overlap>
+```
+
+If you are running with Apptainer or Singularity, you will have to set the following environmental variable before running the pipeline:
+
+Apptainer:
+
+```bash
+export NXF_APPTAINER_HOME_MOUNT=true
+nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+   -profile apptainer \
+   --input samplesheet.yml \
+   --outdir <OUTDIR> \
+   --tile_size <tile_size> \
+   --tile_overlap <tile_overlap>
+```
+
+Singularity:
+
+```bash
+export NXF_SINGULARITY_HOME_MOUNT=true
+nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+   -profile singularity \
+   --input samplesheet.yml \
+   --outdir <OUTDIR> \
+   --tile_size <tile_size> \
+   --tile_overlap <tile_overlap>
+```
+
+If you would like to only generate a QC report, and you already have your metadata, cell_by_gene and boundary files, you can do so as follows:
+
+```bash
+nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+   -profile <docker/singularity/.../institute> \
+   --input samplesheet.yml \
+   --outdir <OUTDIR> \
+  --report_only true
 ```
 
 > [!WARNING]

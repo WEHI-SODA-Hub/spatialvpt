@@ -35,6 +35,7 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
     tile_size
     tile_overlap
     update_vzg
+    report_only
 
     main:
 
@@ -45,14 +46,12 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
         samplesheet,
         tile_size,
         tile_overlap,
-        update_vzg
+        update_vzg,
+        report_only
     )
 
     emit:
-    segmentation    = SPATIALSEGMENTATION.out.segmentation
-    metadata        = SPATIALSEGMENTATION.out.metadata
-    entity_by_gene  = SPATIALSEGMENTATION.out.entity_by_gene
-    vzg             = SPATIALSEGMENTATION.out.vzg
+    report          = SPATIALSEGMENTATION.out.report
     versions        = SPATIALSEGMENTATION.out.versions
 
 }
@@ -79,7 +78,8 @@ workflow {
         params.input,
         params.tile_size,
         params.tile_overlap,
-        params.update_vzg
+        params.update_vzg,
+        params.report_only
     )
 
     //
@@ -89,7 +89,8 @@ workflow {
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.tile_size,
         PIPELINE_INITIALISATION.out.tile_olap,
-        PIPELINE_INITIALISATION.out.update_vzg
+        PIPELINE_INITIALISATION.out.update_vzg,
+        PIPELINE_INITIALISATION.out.report_only
     )
 
     //

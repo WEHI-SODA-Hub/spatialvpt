@@ -7,22 +7,22 @@
                         {
                             "id": "small_set"
                         },
-                        "small_set_metrics.html:md5,78e647cb3479b2d83070a60c8be2eba0"
+                        "small_set_metrics.html:md5,4e19c5ecd3e2257edc2b865210d3f788"
                     ]
                 ],
                 "1": [
-                    "nf_core_pipeline_software_mqc_versions.yml:md5,29fec614a780248d1c561f034d0556d0"
+                    "versions.yml:md5,17564beb35e1ff117e4196fdf4fcb315"
                 ],
                 "report": [
                     [
                         {
                             "id": "small_set"
                         },
-                        "small_set_metrics.html:md5,78e647cb3479b2d83070a60c8be2eba0"
+                        "small_set_metrics.html:md5,4e19c5ecd3e2257edc2b865210d3f788"
                     ]
                 ],
                 "versions": [
-                    "nf_core_pipeline_software_mqc_versions.yml:md5,29fec614a780248d1c561f034d0556d0"
+                    "versions.yml:md5,17564beb35e1ff117e4196fdf4fcb315"
                 ]
             }
         ],
@@ -30,6 +30,6 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.1"
         },
-        "timestamp": "2024-08-26T16:28:20.231657315"
+        "timestamp": "2024-08-26T16:13:07.748573901"
     }
 }

@@ -43,6 +43,26 @@
                 }
             }
         },
+        "workflow_options": {
+            "title": "Workflow options",
+            "type": "object",
+            "fa_icon": "fas fa-cogs",
+            "description": "Options for which workflow(s) to run.",
+            "properties": {
+                "report_only": {
+                    "type": "boolean",
+                    "description": "Generate report only (no segmentation). Requires all input files to be specified in sample sheet.",
+                    "default": false,
+                    "fa_icon": "fas fa-sync"
+                },
+                "update_vzg": {
+                    "type": "boolean",
+                    "description": "Create updated VZG file after segmentation.",
+                    "default": true,
+                    "fa_icon": "fas fa-sync"
+                }
+            }
+        },
         "segmentation_options": {
             "title": "Segmentation options",
             "type": "object",
@@ -60,12 +80,6 @@
                     "description": "Overlap between tiles.",
                     "default": 400,
                     "fa_icon": "fas fa-th-large"
-                },
-                "update_vzg": {
-                    "type": "boolean",
-                    "description": "Create updated VZG file after segmentation.",
-                    "default": true,
-                    "fa_icon": "fas fa-sync"
                 }
             }
         },
@@ -274,6 +288,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/workflow_options"
         },
         {
             "$ref": "#/definitions/segmentation_options"

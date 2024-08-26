@@ -20,46 +20,63 @@ workflow SPATIALSEGMENTATION {
     tile_size
     tile_overlap
     update_vzg
+    report_only
 
     main:
 
-    //
-    // SUBWORKFLOW: Run segmentation workflow with vpt
-    //
-    VPTSEGMENTATION(
-        ch_samplesheet,
-        tile_size,
-        tile_overlap,
-        update_vzg
-    )
+    if (report_only.value) {
+        // compile channels for input to generate-segmentation-metrics from samplesheet
+        ch_samplesheet.map {
+                meta, alg_json, images, mosaic, transcripts, vzg, metadata, entity_by_gene, boundaries ->
+                [ meta, entity_by_gene, metadata, transcripts, images, boundaries, mosaic ]
+        }
+        .set{ ch_metrics_input }
 
-    // compile channels for input to generate-segmentation-metrics
-    ch_entity_by_gene = VPTSEGMENTATION.out.entity_by_gene
-    ch_metadata       = VPTSEGMENTATION.out.metadata
-    ch_transcripts    = VPTSEGMENTATION.out.transcripts
-    ch_images         = VPTSEGMENTATION.out.images
-    ch_boundaries     = VPTSEGMENTATION.out.segmentation
-    ch_mosaic         = VPTSEGMENTATION.out.mosaic
+        //
+        // MODULE: vpt generate-segmentation-metrics
+        //
+        VPT_GENERATESEGMENTATIONMETRICS(
+            ch_metrics_input
+        )
 
-    //
-    // MODULE: vpt generate-segmentation-metrics
-    //
-    VPT_GENERATESEGMENTATIONMETRICS(
-        ch_entity_by_gene
-            .join(ch_metadata)
-            .join(ch_transcripts)
-            .join(ch_images)
-            .join(ch_boundaries)
-            .join(ch_mosaic)
-    )
+        ch_versions = VPT_GENERATESEGMENTATIONMETRICS.out.versions
+    } else {
+        //
+        // SUBWORKFLOW: Run segmentation workflow with vpt
+        //
+        VPTSEGMENTATION(
+            ch_samplesheet,
+            tile_size,
+            tile_overlap,
+            update_vzg
+        )
+
+        // compile channels for input to generate-segmentation-metrics
+        ch_entity_by_gene = VPTSEGMENTATION.out.entity_by_gene
+        ch_metadata       = VPTSEGMENTATION.out.metadata
+        ch_transcripts    = VPTSEGMENTATION.out.transcripts
+        ch_images         = VPTSEGMENTATION.out.images
+        ch_boundaries     = VPTSEGMENTATION.out.segmentation
+        ch_mosaic         = VPTSEGMENTATION.out.mosaic
+
+        //
+        // MODULE: vpt generate-segmentation-metrics
+        //
+        VPT_GENERATESEGMENTATIONMETRICS(
+            ch_entity_by_gene
+                .join(ch_metadata)
+                .join(ch_transcripts)
+                .join(ch_images)
+                .join(ch_boundaries)
+                .join(ch_mosaic)
+        )
+
+        ch_versions = VPTSEGMENTATION.out.versions
+    }
 
     emit:
-    segmentation   = VPTSEGMENTATION.out.segmentation
-    metadata       = VPTSEGMENTATION.out.metadata
-    entity_by_gene = VPTSEGMENTATION.out.entity_by_gene
-    vzg            = VPTSEGMENTATION.out.vzg
     report         = VPT_GENERATESEGMENTATIONMETRICS.out.report
-    versions       = VPTSEGMENTATION.out.versions        // channel: [ path(versions.yml) ]
+    versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 
 /*
