@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "BioimageAnalysisCoreWEHI/spatialvpt v${version} - ${runName}",
+                        "text": "WEHI-SODA-Hub/spatialvpt v${version} - ${runName}",
                         "wrap": true
                     },
                     {

@@ -9,12 +9,12 @@ Content-Type: text/html; charset=utf-8
 $email_html
 
 --nfcoremimeboundary
-Content-Type: image/png;name="BioimageAnalysisCoreWEHI-spatialvpt_logo.png"
+Content-Type: image/png;name="WEHI-SODA-Hub-spatialvpt_logo.png"
 Content-Transfer-Encoding: base64
 Content-ID: <nfcorepipelinelogo>
-Content-Disposition: inline; filename="BioimageAnalysisCoreWEHI-spatialvpt_logo_light.png"
+Content-Disposition: inline; filename="WEHI-SODA-Hub-spatialvpt_logo_light.png"
 
-<% out << new File("$projectDir/assets/BioimageAnalysisCoreWEHI-spatialvpt_logo_light.png").
+<% out << new File("$projectDir/assets/WEHI-SODA-Hub-spatialvpt_logo_light.png").
     bytes.
     encodeBase64().
     toString().

@@ -1,4 +1,4 @@
-# BioimageAnalysisCoreWEHI/spatialvpt: Output
+# WEHI-SODA-Hub/spatialvpt: Output
 
 ## Introduction
 

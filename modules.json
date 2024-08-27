@@ -1,6 +1,6 @@
 {
-    "name": "BioimageAnalysisCoreWEHI/spatialvpt",
-    "homePage": "https://github.com/BioimageAnalysisCoreWEHI/spatialvpt",
+    "name": "WEHI-SODA-Hub/spatialvpt",
+    "homePage": "https://github.com/WEHI-SODA-Hub/spatialvpt",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    BioimageAnalysisCoreWEHI/spatialvpt
+    WEHI-SODA-Hub/spatialvpt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/BioimageAnalysisCoreWEHI/spatialvpt
+    Github : https://github.com/WEHI-SODA-Hub/spatialvpt
 ----------------------------------------------------------------------------------------
 */
 
@@ -28,7 +28,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spat
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow BIOIMAGEANALYSISCOREWEHI_SPATIALVPT {
+workflow WEHISODAHUB_SPATIALVPT {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -85,7 +85,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    BIOIMAGEANALYSISCOREWEHI_SPATIALVPT (
+    WEHISODAHUB_SPATIALVPT (
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.tile_size,
         PIPELINE_INITIALISATION.out.tile_olap,
