@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the BioimageAnalysisCoreWEHI/spatialsegmentation pipeline
+// Subworkflow with functionality specific to the BioimageAnalysisCoreWEHI/spatialvpt pipeline
 //
 
 /*

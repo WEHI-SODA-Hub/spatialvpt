@@ -13,7 +13,7 @@ include { VPT_GENERATESEGMENTATIONMETRICS } from '../modules/local/vpt/generates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow SPATIALSEGMENTATION {
+workflow SPATIALVPT {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input

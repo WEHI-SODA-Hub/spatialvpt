@@ -1,8 +1,8 @@
 nextflow_workflow {
 
-    name "Test Workflow SPATIALSEGMENTATION"
-    script "workflows/spatialsegmentation.nf"
-    workflow "SPATIALSEGMENTATION"
+    name "Test Workflow SPATIALVPT"
+    script "workflows/spatialvpt.nf"
+    workflow "SPATIALVPT"
 
     test("Should run without failures") {
 

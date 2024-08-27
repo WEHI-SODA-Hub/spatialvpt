@@ -1,6 +1,6 @@
 {
-    "name": "BioimageAnalysisCoreWEHI/spatialsegmentation",
-    "homePage": "https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation",
+    "name": "BioimageAnalysisCoreWEHI/spatialvpt",
+    "homePage": "https://github.com/BioimageAnalysisCoreWEHI/spatialvpt",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

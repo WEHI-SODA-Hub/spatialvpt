@@ -1,4 +1,4 @@
-# BioimageAnalysisCoreWEHI/spatialsegmentation: Output
+# BioimageAnalysisCoreWEHI/spatialvpt: Output
 
 ## Introduction
 

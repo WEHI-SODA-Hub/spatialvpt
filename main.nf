@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    BioimageAnalysisCoreWEHI/spatialsegmentation
+    BioimageAnalysisCoreWEHI/spatialvpt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation
+    Github : https://github.com/BioimageAnalysisCoreWEHI/spatialvpt
 ----------------------------------------------------------------------------------------
 */
 
@@ -15,9 +15,9 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SPATIALSEGMENTATION  } from './workflows/spatialsegmentation'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
+include { SPATIALVPT  } from './workflows/spatialvpt'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_spatialvpt_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +28,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spat
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
+workflow BIOIMAGEANALYSISCOREWEHI_SPATIALVPT {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -42,7 +42,7 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
     //
     // WORKFLOW: Run pipeline
     //
-    SPATIALSEGMENTATION (
+    SPATIALVPT (
         samplesheet,
         tile_size,
         tile_overlap,
@@ -51,8 +51,8 @@ workflow BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION {
     )
 
     emit:
-    report          = SPATIALSEGMENTATION.out.report
-    versions        = SPATIALSEGMENTATION.out.versions
+    report          = SPATIALVPT.out.report
+    versions        = SPATIALVPT.out.versions
 
 }
 /*
@@ -85,7 +85,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    BIOIMAGEANALYSISCOREWEHI_SPATIALSEGMENTATION (
+    BIOIMAGEANALYSISCOREWEHI_SPATIALVPT (
         PIPELINE_INITIALISATION.out.samplesheet,
         PIPELINE_INITIALISATION.out.tile_size,
         PIPELINE_INITIALISATION.out.tile_olap,

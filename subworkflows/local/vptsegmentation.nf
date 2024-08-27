@@ -11,7 +11,7 @@ include { PARTITION_TRANSCRIPTS     } from '../../modules/local/vpt/partition-tr
 include { DERIVE_ENTITY_METADATA    } from '../../modules/local/vpt/derive-entity-metadata/main'
 include { UPDATE_VZG                } from '../../modules/local/vpt/update-vzg/main'
 include { softwareVersionsToYAML    } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText    } from '../../subworkflows/local/utils_nfcore_spatialsegmentation_pipeline'
+include { methodsDescriptionText    } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 
 workflow VPTSEGMENTATION {
 

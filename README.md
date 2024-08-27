@@ -1,16 +1,16 @@
-[![GitHub Actions CI Status](https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation/actions/workflows/ci.yml/badge.svg)](https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation/actions/workflows/linting.yml/badge.svg)](https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![GitHub Actions CI Status](https://github.com/BioimageAnalysisCoreWEHI/szpatialsegmentation/actions/workflows/ci.yml/badge.svg)](https://github.com/BioimageAnalysisCoreWEHI/spatialvpt/actions/workflows/ci.yml)
+[![GitHub Actions Linting Status](https://github.com/BioimageAnalysisCoreWEHI/spatialvpt/actions/workflows/linting.yml/badge.svg)](https://github.com/BioimageAnalysisCoreWEHI/spatialvpt/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/BioimageAnalysisCoreWEHI/spatialsegmentation)
+[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/BioimageAnalysisCoreWEHI/spatialvpt)
 
 ## Introduction
 
-**BioimageAnalysisCoreWEHI/spatialsegmentation** is a bioinformatics pipeline that performs cell segmentation and creates a QC report for MERSCOPE data using the vizgen-postprocessing tool.
+**BioimageAnalysisCoreWEHI/spatialvpt** is a bioinformatics pipeline that performs cell segmentation and creates a QC report for MERSCOPE data using the vizgen-postprocessing tool.
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -52,7 +52,7 @@ Currently, only one sample can be processed at one time.
 To run cell segmentation via VPT, you can run the pipeline using:
 
 ```bash
-nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+nextflow run BioimageAnalysisCoreWEHI/spatialvpt \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.yml \
    --outdir <OUTDIR> \
@@ -66,7 +66,7 @@ Apptainer:
 
 ```bash
 export NXF_APPTAINER_HOME_MOUNT=true
-nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+nextflow run BioimageAnalysisCoreWEHI/spatialvpt \
    -profile apptainer \
    --input samplesheet.yml \
    --outdir <OUTDIR> \
@@ -78,7 +78,7 @@ Singularity:
 
 ```bash
 export NXF_SINGULARITY_HOME_MOUNT=true
-nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+nextflow run BioimageAnalysisCoreWEHI/spatialvpt \
    -profile singularity \
    --input samplesheet.yml \
    --outdir <OUTDIR> \
@@ -89,7 +89,7 @@ nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
 If you would like to only generate a QC report, and you already have your metadata, cell_by_gene and boundary files, you can do so as follows:
 
 ```bash
-nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
+nextflow run BioimageAnalysisCoreWEHI/spatialvpt \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.yml \
    --outdir <OUTDIR> \
@@ -102,7 +102,7 @@ nextflow run BioimageAnalysisCoreWEHI/spatialsegmentation \
 
 ## Credits
 
-BioimageAnalysisCoreWEHI/spatialsegmentation was originally written by Marek Cmero.
+BioimageAnalysisCoreWEHI/spatialvpt was originally written by Marek Cmero.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -115,7 +115,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use BioimageAnalysisCoreWEHI/spatialsegmentation for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use BioimageAnalysisCoreWEHI/spatialvpt for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
