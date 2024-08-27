@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the BioimageAnalysisCoreWEHI/spatialvpt pipeline
+// Subworkflow with functionality specific to the WEHI-SODA-Hub/spatialvpt pipeline
 //
 
 /*

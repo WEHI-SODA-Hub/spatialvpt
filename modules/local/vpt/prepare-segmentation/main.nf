@@ -3,8 +3,8 @@ process PREPARE_SEGMENTATION {
     label 'process_small'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' :
-        'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
     tuple val(meta), path(algorithm_json), path(input_images), path(um_to_mosaic_file), path(detected_transcripts), path(input_vzg)

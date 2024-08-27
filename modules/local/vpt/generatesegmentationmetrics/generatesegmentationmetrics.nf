@@ -3,8 +3,8 @@ process VPT_GENERATESEGMENTATIONMETRICS {
     label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' :
-        'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
     tuple val(meta), path(entity_by_gene), path(metadata), path(transcripts), path(images), path(boundaries), path(micron_to_mosaic)

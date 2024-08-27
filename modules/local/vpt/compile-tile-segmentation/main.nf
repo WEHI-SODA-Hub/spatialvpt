@@ -3,8 +3,8 @@ process COMPILE_TILE_SEGMENTATION {
     label 'process_large'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' :
-        'ghcr.io/bioimageanalysiscorewehi/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
     tuple val(meta), path(segmentation_spec), path(images), path(algorithm_json)
