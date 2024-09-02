@@ -1,0 +1,10 @@
+name: combine_channels
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - aicsimageio =4.10.0
+  - dask =2024.8.1
+  - tifffile =2024.8.24
+  - xmlschema =3.3.2
