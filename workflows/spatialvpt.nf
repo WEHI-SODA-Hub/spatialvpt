@@ -21,13 +21,14 @@ workflow SPATIALVPT {
     tile_overlap
     update_vzg
     report_only
+    combine_channels
 
     main:
 
     if (report_only.value) {
         // compile channels for input to generate-segmentation-metrics from samplesheet
         ch_samplesheet.map {
-                meta, alg_json, images, mosaic, transcripts, vzg, metadata, entity_by_gene, boundaries ->
+                meta, alg_json, images, mosaic, transcripts, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
                 [ meta, entity_by_gene, metadata, transcripts, images, boundaries, mosaic ]
         }
         .set{ ch_metrics_input }
@@ -48,7 +49,8 @@ workflow SPATIALVPT {
             ch_samplesheet,
             tile_size,
             tile_overlap,
-            update_vzg
+            update_vzg,
+            combine_channels
         )
 
         // compile channels for input to generate-segmentation-metrics

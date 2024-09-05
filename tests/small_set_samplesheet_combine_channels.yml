@@ -1,0 +1,7 @@
+- sample: "small_set"
+  algorithm_json: "data/example_analysis_algorithm/cellpose2_cyto2.json"
+  images_dir: "data/202305010900_U2OS_small_set_VMSC00000/region_0/images"
+  um_to_mosaic_file: "data/202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv"
+  detected_transcripts: "data/202305010900_U2OS_small_set_VMSC00000/region_0/detected_transcripts.csv"
+  input_vzg: "data/202305010900_U2OS_small_set_VMSC00000/region_0/202305010900_U2OS_small_set_VMSC00000_region_0.vzg"
+  combine_channel_settings: "Cellbound1+Cellbound2+Cellbound3=Cellbound:z4:t512:m0.108"

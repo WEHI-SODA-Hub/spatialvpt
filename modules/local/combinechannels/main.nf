@@ -1,5 +1,6 @@
 process COMBINECHANNELS {
     tag "$meta.id"
+    publishDir "${image_outdir}", mode: 'copy', overwrite: 'false'
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
@@ -8,15 +9,13 @@ process COMBINECHANNELS {
 
     input:
     tuple val(meta), path(images)
-    val(channels_to_combine)
-    val(combined_channel)
-    val(zindex)
-    val(combine_tile_size)
-    val(microns_per_pixel)
+    tuple val(channels_to_combine), val(combined_channel), val(zindex), val(combine_tile_size), val(microns_per_pixel)
+    val(image_outdir)
 
     output:
     tuple val(meta), path("*.tif"), emit: tif
     path "versions.yml"           , emit: versions
+    val true                      , emit: done
 
     when:
     task.ext.when == null || task.ext.when

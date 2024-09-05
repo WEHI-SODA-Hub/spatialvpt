@@ -67,6 +67,11 @@
                 "exists": true,
                 "pattern": "^\\S+\\.parquet$",
                 "errorMessage": "Input boundaries file with .parquet extension must be provided and must exist"
+            },
+            "combine_channel_settings": {
+                "type": "string",
+                "format": "^[a-zA-Z0-9\\+]+=[a-zA-Z0-9]+:z[0-9]+:t[0-9]+:m[0-9]+$",
+                "errorMessage": "Combine channel settings must be in the format 'channel1+channel2+channel3=merged_channel_name:z1:t512:m0.108' where z, t and m values are the z-index, tile size and microns per pixel"
             }
         },
         "required": ["sample", "images_dir"]

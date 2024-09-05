@@ -40,6 +40,7 @@ workflow PIPELINE_INITIALISATION {
     tile_overlap      // integer: Overlap between adjacent tiles
     update_vzg        // boolean: Whether to create an updated VZG file after segmentation
     report_only       // boolean: Whether to run vpt generate-segmentation-metrics only on already segmented data
+    combine_channels  // boolean: Whether to combine channels; requires settings to be specified in sample sheet
 
     main:
 
@@ -96,11 +97,12 @@ workflow PIPELINE_INITIALISATION {
 
     emit:
     samplesheet = ch_samplesheet
-    tile_size   = tile_size
-    tile_olap   = tile_overlap
-    update_vzg  = update_vzg
-    report_only = report_only
-    versions    = ch_versions
+    tile_size        = tile_size
+    tile_olap        = tile_overlap
+    update_vzg       = update_vzg
+    report_only      = report_only
+    combine_channels = combine_channels
+    versions         = ch_versions
 }
 
 /*
@@ -154,7 +156,7 @@ workflow PIPELINE_COMPLETION {
 //
 def validateInputSamplesheet(input) {
     // TODO: add argument that handles regex for mosaic file
-    def (meta, algorithm, images, mosaic_file, detected_txs, vzg, metadata, entity_by_gene, boundaries) = input
+    def (meta, algorithm, images, mosaic_file, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings) = input
     if (meta.size() != 1) {
         error("Only one sample can be processed via the pipeline. Please check your samplesheet")
     }

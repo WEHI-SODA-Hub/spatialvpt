@@ -4,6 +4,7 @@
 //
 
 include { paramsSummaryMap          } from 'plugin/nf-validation'
+include { COMBINECHANNELS           } from '../../modules/local/combinechannels/main'
 include { PREPARE_SEGMENTATION      } from '../../modules/local/vpt/prepare-segmentation/main'
 include { RUN_SEGMENTATION_ON_TILE  } from '../../modules/local/vpt/run-segmentation-on-tile/main'
 include { COMPILE_TILE_SEGMENTATION } from '../../modules/local/vpt/compile-tile-segmentation/main'
@@ -16,29 +17,96 @@ include { methodsDescriptionText    } from '../../subworkflows/local/utils_nfcor
 workflow VPTSEGMENTATION {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
-    tile_size      // value: defined by params.tile_size (int)
-    tile_overlap   // value: defined by params.tile_overlap (int)
-    update_vzg     // value: defined by params.update_vzg (boolean)
+    ch_samplesheet   // channel: samplesheet read in from --input
+    tile_size        // value: defined by params.tile_size (int)
+    tile_overlap     // value: defined by params.tile_overlap (int)
+    update_vzg       // value: defined by params.update_vzg (boolean)
+    combine_channels // value: defined by params.combine_channels (boolean)
 
     main:
 
     ch_versions = Channel.empty()
 
-    // Extract detected transcripts from samplesheet
+    // get images channel for combine channels input
+    ch_samplesheet.map {
+            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
+            [meta, detected_txs]
+            [meta, images]
+        }
+        .set{ ch_images }
+
+    // Prepare input for segmentation
     ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
             [meta, alg_json, images, mosaic, detected_txs, vzg] }
         .set{ ch_segmentation_input }
 
-    //
-    // MODULE: Run vpt prepare-segmentation
-    //
-    PREPARE_SEGMENTATION (
-        ch_segmentation_input,
-        tile_size,
-        tile_overlap
-    )
+    if (combine_channels.value) {
+        // Extract and parse combine channel settings
+        ch_samplesheet
+            .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
+                combine_settings}
+            .first()
+            .map { comb_str ->
+                def channels_to_merge = comb_str
+                    .split('=')[0]
+                    .replace('+', ',')
+
+                def merged_channel = comb_str
+                    .split('=')[1]
+                    .split(':')[0]
+
+                def z_index = comb_str
+                    .split('=')[1]
+                    .split(':')[1]
+                    .replace('z', '')
+
+                def tile_size = comb_str
+                    .split('=')[1]
+                    .split(':')[2]
+                    .replace('t', '')
+
+                def mpp = comb_str
+                    .split('=')[1]
+                    .split(':')[3]
+                    .replace('m', '')
+
+                return [channels_to_merge,
+                        'mosiac_' + merged_channel + '_z',
+                        z_index, tile_size, mpp]
+            }
+            .set{ ch_combine_settings }
+
+        //
+        // MODULE: Run combine_channels script
+        //
+        COMBINECHANNELS(
+            ch_images,
+            ch_combine_settings,
+            ch_images.map { meta, images -> images }
+        )
+
+        //
+        // MODULE: Run vpt prepare-segmentation
+        //
+        PREPARE_SEGMENTATION (
+            ch_segmentation_input,
+            tile_size,
+            tile_overlap,
+            COMBINECHANNELS.out.done
+        )
+    } else {
+        // No channel combination
+        //
+        // MODULE: Run vpt prepare-segmentation
+        //
+        PREPARE_SEGMENTATION (
+            ch_segmentation_input,
+            tile_size,
+            tile_overlap,
+            true
+        )
+    }
 
     // Create list sequence of 0..N tiles
     // TODO: determine whether multi-sample functionality
@@ -88,7 +156,7 @@ workflow VPTSEGMENTATION {
 
     // Extract detected transcripts from samplesheet
     ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
             detected_txs }
         .set{ ch_detected_txs }
 
@@ -119,7 +187,7 @@ workflow VPTSEGMENTATION {
     if (update_vzg.value) {
         // Put together input for update-vzg
         ch_samplesheet.map {
-                meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+                meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
                 [meta, vzg]
             }
             .join(ch_segmentation_output)
@@ -141,22 +209,14 @@ workflow VPTSEGMENTATION {
 
     // get transcripts channel for downstream output
     ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
             [meta, detected_txs]
         }
         .set{ ch_transcripts }
 
-    // get images channel for downstream output
-    ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
-            [meta, detected_txs]
-            [meta, images]
-        }
-        .set{ ch_images}
-
     // get micron_to_mosaic channel for downstream output
     ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries ->
+            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
             [meta, mosaic]
         }
         .set{ ch_mosaic }

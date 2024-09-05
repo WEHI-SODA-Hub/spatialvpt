@@ -36,6 +36,7 @@ workflow WEHISODAHUB_SPATIALVPT {
     tile_overlap
     update_vzg
     report_only
+    combine_channels
 
     main:
 
@@ -47,7 +48,8 @@ workflow WEHISODAHUB_SPATIALVPT {
         tile_size,
         tile_overlap,
         update_vzg,
-        report_only
+        report_only,
+        combine_channels
     )
 
     emit:
@@ -79,7 +81,8 @@ workflow {
         params.tile_size,
         params.tile_overlap,
         params.update_vzg,
-        params.report_only
+        params.report_only,
+        params.combine_channels
     )
 
     //
@@ -90,7 +93,8 @@ workflow {
         PIPELINE_INITIALISATION.out.tile_size,
         PIPELINE_INITIALISATION.out.tile_olap,
         PIPELINE_INITIALISATION.out.update_vzg,
-        PIPELINE_INITIALISATION.out.report_only
+        PIPELINE_INITIALISATION.out.report_only,
+        PIPELINE_INITIALISATION.out.combine_channels
     )
 
     //

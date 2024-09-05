@@ -60,6 +60,12 @@
                     "description": "Create updated VZG file after segmentation.",
                     "default": true,
                     "fa_icon": "fas fa-sync"
+                },
+                "combine_channels": {
+                    "type": "boolean",
+                    "description": "Whether to combine input channels. Channel merging details must be provided in sample sheet in format 'channel1+channel2=merged_channel:z1' where z1 is the z-index.",
+                    "default": false,
+                    "fa_icon": "fas fa-sync"
                 }
             }
         },
