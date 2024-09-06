@@ -45,6 +45,21 @@ First, prepare a samplesheet with your input data that looks as follows:
 
 The `metadata`, `entity_by_gene` and `boundaries` values are only required if running in `report_only` mode.
 
+If you want to merge channels, you will also need to specify this in the samplesheet file via:
+
+```yaml
+  combine_channel_settings: "Channel1+Channel2=Channel:z4:t512:m0.108"
+```
+
+The format is in four parts separated by colons:
+
+- `Channel1+Channel2` -- this indicates the channels to merge separated by `+`
+- `Channel` -- merged channel name (the `mosaic_` prefix and `_z` postfix are added automatically
+- `t512` -- tile size to use for the merged image
+- `m0.108` -- micron per pixel value to used for the merged image
+
+Make sure to set the merged channel name in your `algorithm.json` file.
+
 Note that the `algorithm_json` file is temperamental. Check the [Vizgen documentation](https://vizgen.github.io/vizgen-postprocessing/segmentation_options/json_file_format.html) on the requirements.
 
 Currently, only one sample can be processed at one time.
