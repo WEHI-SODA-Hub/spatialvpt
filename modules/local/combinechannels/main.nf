@@ -1,7 +1,7 @@
 process COMBINECHANNELS {
     tag "$meta.id"
     publishDir "${image_outdir}", mode: 'copy', overwrite: 'false'
-    label 'process_low'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

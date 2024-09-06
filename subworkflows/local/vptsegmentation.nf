@@ -72,7 +72,7 @@ workflow VPTSEGMENTATION {
                     .replace('m', '')
 
                 return [channels_to_merge,
-                        'mosiac_' + merged_channel + '_z',
+                        'mosaic_' + merged_channel + '_z',
                         z_index, tile_size, mpp]
             }
             .set{ ch_combine_settings }
