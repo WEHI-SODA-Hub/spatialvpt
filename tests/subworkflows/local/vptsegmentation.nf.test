@@ -23,6 +23,7 @@ nextflow_workflow {
                 input[1] = 2400
                 input[2] = 200
                 input[3] = true
+                input[4] = false
                 """
             }
         }

@@ -16,11 +16,14 @@ nextflow_process {
                     [ id: 'small_set' ],
                     [ file('${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images', checkIfExists: true) ],
                 ])
-                input[1] = "cellbound1,cellbound2,cellbound3"
-                input[2] = "mosaic_Cellbound_z"
-                input[3] = 4
-                input[4] = 512
-                input[5] = 0.108
+                input[1] = Channel.of([
+                    "cellbound1,cellbound2,cellbound3",
+                    "mosaic_Cellbound_z",
+                    4,
+                    512,
+                    0.108
+                ])
+                input[2] = '${projectDir}/data/202305010900_U2OS_small_set_VMSC00000/region_0/images'
                 """
             }
         }
