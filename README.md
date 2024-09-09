@@ -91,7 +91,7 @@ nextflow run WEHI-SODA-Hub/spatialvpt \
 If you want to merge channels, you will also need to specify this in the samplesheet file via:
 
 ```yaml
-  combine_channel_settings: "Channel1+Channel2=Channel:z4:t512:m0.108"
+combine_channel_settings: "Channel1+Channel2=Channel:z4:t512:m0.108"
 ```
 
 The format is in four parts separated by colons:
@@ -112,6 +112,7 @@ nextflow run WEHI-SODA-Hub/spatialvpt \
    --tile_overlap <tile_overlap> \
    --combine_channels true
 ```
+
 ### Report-only mode
 
 If you would like to only generate a QC report, and you already have your metadata, cell_by_gene and boundary files, you can do so as follows:

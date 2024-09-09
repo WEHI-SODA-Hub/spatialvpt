@@ -1,11 +1,11 @@
 process COMBINECHANNELS {
     tag "$meta.id"
     publishDir "${image_outdir}", mode: 'copy', overwrite: 'false'
-    label 'process_medium'
+    label 'process_high_memory'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mcmero/tifftools:aicsimageio_dask_tifffile_xmlschema--9aaffd8b5252c207': 'docker.io/mcmero/tifftools:aicsimageio_dask_tifffile_xmlschema--9aaffd8b5252c207' }"
+        'docker://mcmero/tifftools:python-3.12.5_aicsimageio_dask_tifffile_xmlschema--007280ae0ab35b3e': 'docker.io/mcmero/tifftools:python-3.12.5_aicsimageio_dask_tifffile_xmlschema--007280ae0ab35b3e' }"
 
     input:
     tuple val(meta), path(images)
