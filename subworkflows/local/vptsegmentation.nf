@@ -21,9 +21,10 @@ workflow VPTSEGMENTATION {
     algorithm_json
     images_dir
     um_to_mosaic_file
+    detected_txs
+    custom_weights
     update_vzg
     input_vzg
-    detected_txs
     tile_size
     tile_overlap
     combine_channels
@@ -39,7 +40,7 @@ workflow VPTSEGMENTATION {
 
     if (combine_channels.value) {
         // Extract and parse combine channel settings
-         Channel.of(combine_channel_settings)
+        Channel.of(combine_channel_settings)
             .map { comb_str ->
                 def channels_to_merge = comb_str
                     .split('=')[0]
@@ -125,7 +126,8 @@ workflow VPTSEGMENTATION {
     // MODULE: Run vpt run-segmentation-on-tile
     //
     RUN_SEGMENTATION_ON_TILE(
-        ch_tile_segments
+        ch_tile_segments,
+        custom_weights.first()
     )
 
     /// collect segmented tiles

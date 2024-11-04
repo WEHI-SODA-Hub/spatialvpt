@@ -117,7 +117,6 @@ entity_by_gene: "/path/to/entity_by_gene.csv"
 boundaries: "/path/to/segmentation.parquet"
 ```
 
-
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \

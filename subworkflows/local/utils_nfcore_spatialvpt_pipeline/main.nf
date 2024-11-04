@@ -35,21 +35,22 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    sample
-    algorithm_json
-    images_dir
-    um_to_mosaic_file
+    sample            //  string: Sample name
+    algorithm_json    //  string: Path to algorithm JSON file
+    images_dir        //  string: Directory containing image files
+    um_to_mosaic_file //  string: Path to micron to mosaic file
+    detected_transcripts // string: Path to detected transcripts file
+    custom_weights    //  string: Path to file containing custom weights (optional)
     update_vzg        // boolean: Whether to create an updated VZG file after segmentation
-    input_vzg
+    input_vzg         //  string: Path to VZG file for MERSCOPE visualisation
     tile_size         // integer: Pixels tile width and height
     tile_overlap      // integer: Overlap between adjacent tiles
     report_only       // boolean: Whether to run vpt generate-segmentation-metrics only on already segmented data
-    detected_transcripts
-    metadata
-    entity_by_gene
-    boundaries
+    metadata          //  string: Path to metadata file (optional, only required for report_only mode)
+    entity_by_gene    //  string: Path to entity_by_gene file (optional, only required for report_only mode)
+    boundaries        //  string: Path to parquet boundaries file (optional, onle required for report_only mode)
     combine_channels  // boolean: Whether to combine channels; requires settings to be specified in sample sheet
-    combine_channel_settings
+    combine_channel_settings // string: Settings to combine channels
 
     main:
 
@@ -105,6 +106,13 @@ workflow PIPELINE_INITIALISATION {
         ch_bound    = Channel.fromPath(boundaries, checkIfExists: true)
     }
 
+    // Use blank file definition for custom weights unless custom_weights
+    // is defined in config, in which case construct a path channel
+    ch_weights = Channel.fromPath('.')
+    if (custom_weights != null && custom_weights != '') {
+        ch_weights = Channel.fromPath(custom_weights, checkIfExists: true)
+    }
+
     if (!tile_size.toString().isInteger()) {
         error "The tile_size parameter is not a valid integer"
     }
@@ -117,12 +125,13 @@ workflow PIPELINE_INITIALISATION {
     algorithm_json           = ch_alg_json
     images_dir               = ch_images
     um_to_mosaic_file        = ch_mosaic
+    detected_transcripts     = ch_txs
+    custom_weights           = ch_weights
     update_vzg               = update_vzg
     input_vzg                = ch_input_vzg
     tile_size                = tile_size
     tile_overlap             = tile_overlap
     report_only              = report_only
-    detected_transcripts     = ch_txs
     metadata                 = ch_metadata
     entity_by_gene           = ch_ebgene
     boundaries               = ch_bound

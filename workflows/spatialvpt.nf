@@ -20,12 +20,13 @@ workflow SPATIALVPT {
     algorithm_json
     images_dir
     um_to_mosaic_file
+    detected_transcripts
+    custom_weights
     update_vzg
     input_vzg
     tile_size
     tile_overlap
     report_only
-    detected_transcripts
     metadata
     entity_by_gene
     boundaries
@@ -61,9 +62,10 @@ workflow SPATIALVPT {
             algorithm_json,
             images_dir,
             um_to_mosaic_file,
+            detected_transcripts,
+            custom_weights,
             update_vzg,
             input_vzg,
-            detected_transcripts,
             tile_size,
             tile_overlap,
             combine_channels,

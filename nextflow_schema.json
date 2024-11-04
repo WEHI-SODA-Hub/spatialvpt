@@ -29,7 +29,7 @@
                     "mimetype": "test/json",
                     "pattern": "^\\S+\\.(json)$",
                     "description": "Path to the JSON file containing the algorithm parameters.",
-                    "help_text": "The JSON file should contain the parameters for the segmentation." ,
+                    "help_text": "The JSON file should contain the parameters for the segmentation.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "images_dir": {
@@ -68,6 +68,14 @@
                     "description": "Path to the CSV file containing the detected transcripts.",
                     "help_text": "The CSV file should contain the detected transcripts.",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "custom_weights": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream",
+                    "pattern": "^\\S+$",
+                    "description": "Path to the custom weights file.",
+                    "help_text": "Optional file containing custom weights for segmentation."
                 },
                 "metadata": {
                     "type": "string",

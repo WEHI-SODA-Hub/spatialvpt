@@ -35,12 +35,13 @@ workflow WEHISODAHUB_SPATIALVPT {
     algorithm_json
     images_dir
     um_to_mosaic_file
+    detected_transcripts
+    custom_weights
     update_vzg
     input_vzg
     tile_size
     tile_overlap
     report_only
-    detected_transcripts
     metadata
     entity_by_gene
     boundaries
@@ -57,12 +58,13 @@ workflow WEHISODAHUB_SPATIALVPT {
         algorithm_json,
         images_dir,
         um_to_mosaic_file,
+        detected_transcripts,
+        custom_weights,
         update_vzg,
         input_vzg,
         tile_size,
         tile_overlap,
         report_only,
-        detected_transcripts,
         metadata,
         entity_by_gene,
         boundaries,
@@ -99,12 +101,13 @@ workflow {
         params.algorithm_json,
         params.images_dir,
         params.um_to_mosaic_file,
+        params.detected_transcripts,
+        params.custom_weights,
         params.update_vzg,
         params.input_vzg,
         params.tile_size,
         params.tile_overlap,
         params.report_only,
-        params.detected_transcripts,
         params.metadata,
         params.entity_by_gene,
         params.boundaries,
@@ -120,12 +123,13 @@ workflow {
         PIPELINE_INITIALISATION.out.algorithm_json,
         PIPELINE_INITIALISATION.out.images_dir,
         PIPELINE_INITIALISATION.out.um_to_mosaic_file,
+        PIPELINE_INITIALISATION.out.detected_transcripts,
+        PIPELINE_INITIALISATION.out.custom_weights,
         PIPELINE_INITIALISATION.out.update_vzg,
         PIPELINE_INITIALISATION.out.input_vzg,
         PIPELINE_INITIALISATION.out.tile_size,
         PIPELINE_INITIALISATION.out.tile_overlap,
         PIPELINE_INITIALISATION.out.report_only,
-        PIPELINE_INITIALISATION.out.detected_transcripts,
         PIPELINE_INITIALISATION.out.metadata,
         PIPELINE_INITIALISATION.out.entity_by_gene,
         PIPELINE_INITIALISATION.out.boundaries,

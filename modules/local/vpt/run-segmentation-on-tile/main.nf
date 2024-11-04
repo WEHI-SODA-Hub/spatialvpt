@@ -8,6 +8,7 @@ process RUN_SEGMENTATION_ON_TILE {
 
     input:
     tuple val(meta), path(segmentation_spec), path(input_images), path(algorithm_json), val(tile_index)
+    path(custom_weights)
 
     output:
     tuple val(meta), path("result_tiles/*.parquet"), emit: segmented_tile
