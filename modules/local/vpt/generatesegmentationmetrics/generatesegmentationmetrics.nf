@@ -7,11 +7,17 @@ process VPT_GENERATESEGMENTATIONMETRICS {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(entity_by_gene), path(metadata), path(transcripts), path(images), path(boundaries), path(micron_to_mosaic)
+    val(meta)
+    path(entity_by_gene)
+    path(metadata)
+    path(transcripts)
+    path(images)
+    path(boundaries)
+    path(micron_to_mosaic)
 
     output:
-    tuple val(meta), path("*.html"), emit: report
-    tuple val(meta), path("*.csv"),  emit: metrics
+    path("*.html"), emit: report
+    path("*.csv"),  emit: metrics
     path "versions.yml"           ,  emit: versions
 
     when:

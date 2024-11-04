@@ -7,7 +7,10 @@ process PREPARE_SEGMENTATION {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(algorithm_json), path(input_images), path(um_to_mosaic_file), path(detected_transcripts), path(input_vzg)
+    val(meta)
+    path(algorithm_json)
+    path(input_images)
+    path(um_to_mosaic_file)
     val(tile_size)
     val(tile_overlap)
     val(channel_merge_ready)

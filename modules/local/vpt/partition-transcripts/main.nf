@@ -7,10 +7,12 @@ process PARTITION_TRANSCRIPTS {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(micron_space), path(input_transcripts)
+    val(meta)
+    path(micron_space)
+    path(input_transcripts)
 
     output:
-    tuple val(meta), path("*.csv"), emit: transcripts
+    path("*.csv"), emit: transcripts
     path  "versions.yml"          , emit: versions
 
     when:

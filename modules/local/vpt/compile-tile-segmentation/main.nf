@@ -11,8 +11,8 @@ process COMPILE_TILE_SEGMENTATION {
     path(segmentation_tiles)
 
     output:
-    tuple val(meta), path("*_mosaic_space.parquet"), emit: mosaic_space
-    tuple val(meta), path("*_micron_space.parquet"), emit: micron_space
+    path("*_mosaic_space.parquet"), emit: mosaic_space
+    path("*_micron_space.parquet"), emit: micron_space
     path  "versions.yml"          , emit: versions
 
     when:

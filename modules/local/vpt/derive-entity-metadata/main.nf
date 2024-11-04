@@ -7,10 +7,11 @@ process DERIVE_ENTITY_METADATA {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(micron_space)
+    val(meta)
+    path(micron_space)
 
     output:
-    tuple val(meta), path("*.csv"), emit: entity_metadata
+    path("*.csv"), emit: entity_metadata
     path  "versions.yml"          , emit: versions
 
     when:

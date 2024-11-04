@@ -35,12 +35,21 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
+    sample
+    algorithm_json
+    images_dir
+    um_to_mosaic_file
+    update_vzg        // boolean: Whether to create an updated VZG file after segmentation
+    input_vzg
     tile_size         // integer: Pixels tile width and height
     tile_overlap      // integer: Overlap between adjacent tiles
-    update_vzg        // boolean: Whether to create an updated VZG file after segmentation
     report_only       // boolean: Whether to run vpt generate-segmentation-metrics only on already segmented data
+    detected_transcripts
+    metadata
+    entity_by_gene
+    boundaries
     combine_channels  // boolean: Whether to combine channels; requires settings to be specified in sample sheet
+    combine_channel_settings
 
     main:
 
@@ -78,15 +87,23 @@ workflow PIPELINE_INITIALISATION {
         nextflow_cli_args
     )
 
-    //
-    // Create channel from input file provided through params.input
-    //
-    Channel
-        .fromSamplesheet("input")
-        .map {
-            validateInputSamplesheet(it)
-        }
-        .set { ch_samplesheet }
+    // Create channels from file inputs
+    ch_alg_json  = Channel.fromPath(algorithm_json, checkIfExists: true)
+    ch_input_vzg = Channel.fromPath(input_vzg, checkIfExists: true)
+    ch_images    = Channel.fromPath(images_dir, checkIfExists: true)
+    ch_mosaic    = Channel.fromPath(um_to_mosaic_file, checkIfExists: true)
+    ch_txs       = Channel.fromPath(detected_transcripts, checkIfExists: true)
+
+    // These channels are only required if running in report_only mode
+    ch_metadata  = Channel.empty()
+    ch_ebgene    = Channel.empty()
+    ch_bound     = Channel.empty()
+
+    if (report_only.value) {
+        ch_metadata = Channel.fromPath(metadata, checkIfExists: true)
+        ch_ebgene   = Channel.fromPath(entity_by_gene, checkIfExists: true)
+        ch_bound    = Channel.fromPath(boundaries, checkIfExists: true)
+    }
 
     if (!tile_size.toString().isInteger()) {
         error "The tile_size parameter is not a valid integer"
@@ -96,13 +113,22 @@ workflow PIPELINE_INITIALISATION {
     }
 
     emit:
-    samplesheet = ch_samplesheet
-    tile_size        = tile_size
-    tile_olap        = tile_overlap
-    update_vzg       = update_vzg
-    report_only      = report_only
-    combine_channels = combine_channels
-    versions         = ch_versions
+    sample                   = sample
+    algorithm_json           = ch_alg_json
+    images_dir               = ch_images
+    um_to_mosaic_file        = ch_mosaic
+    update_vzg               = update_vzg
+    input_vzg                = ch_input_vzg
+    tile_size                = tile_size
+    tile_overlap             = tile_overlap
+    report_only              = report_only
+    detected_transcripts     = ch_txs
+    metadata                 = ch_metadata
+    entity_by_gene           = ch_ebgene
+    boundaries               = ch_bound
+    combine_channels         = combine_channels
+    combine_channel_settings = combine_channel_settings
+    versions                 = ch_versions
 }
 
 /*

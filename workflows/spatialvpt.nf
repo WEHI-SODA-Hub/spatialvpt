@@ -16,28 +16,39 @@ include { VPT_GENERATESEGMENTATIONMETRICS } from '../modules/local/vpt/generates
 workflow SPATIALVPT {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    sample
+    algorithm_json
+    images_dir
+    um_to_mosaic_file
+    update_vzg
+    input_vzg
     tile_size
     tile_overlap
-    update_vzg
     report_only
+    detected_transcripts
+    metadata
+    entity_by_gene
+    boundaries
     combine_channels
+    combine_channel_settings
 
     main:
 
-    if (report_only.value) {
-        // compile channels for input to generate-segmentation-metrics from samplesheet
-        ch_samplesheet.map {
-                meta, alg_json, images, mosaic, transcripts, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-                [ meta, entity_by_gene, metadata, transcripts, images, boundaries, mosaic ]
-        }
-        .set{ ch_metrics_input }
+    sample.map{ sample -> [id: sample] }
+        .set{ meta }
 
+    if (report_only.value) {
         //
         // MODULE: vpt generate-segmentation-metrics
         //
         VPT_GENERATESEGMENTATIONMETRICS(
-            ch_metrics_input
+            meta,
+            entity_by_gene,
+            metadata,
+            detected_transcripts,
+            images_dir,
+            boundaries,
+            um_to_mosaic_file
         )
 
         ch_versions = VPT_GENERATESEGMENTATIONMETRICS.out.versions
@@ -46,11 +57,17 @@ workflow SPATIALVPT {
         // SUBWORKFLOW: Run segmentation workflow with vpt
         //
         VPTSEGMENTATION(
-            ch_samplesheet,
+            meta,
+            algorithm_json,
+            images_dir,
+            um_to_mosaic_file,
+            update_vzg,
+            input_vzg,
+            detected_transcripts,
             tile_size,
             tile_overlap,
-            update_vzg,
-            combine_channels
+            combine_channels,
+            combine_channel_settings
         )
 
         // compile channels for input to generate-segmentation-metrics
@@ -65,12 +82,13 @@ workflow SPATIALVPT {
         // MODULE: vpt generate-segmentation-metrics
         //
         VPT_GENERATESEGMENTATIONMETRICS(
-            ch_entity_by_gene
-                .join(ch_metadata)
-                .join(ch_transcripts)
-                .join(ch_images)
-                .join(ch_boundaries)
-                .join(ch_mosaic)
+            meta,
+            ch_entity_by_gene,
+            ch_metadata,
+            ch_transcripts,
+            ch_images,
+            ch_boundaries,
+            ch_mosaic
         )
 
         ch_versions = VPTSEGMENTATION.out.versions

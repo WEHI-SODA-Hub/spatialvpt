@@ -34,32 +34,25 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.yml`:
 
 ```yaml
-- sample: "sample_name"
-  algorithm_json: "/path/to/algorithm.json"
-  images_dir: "/path/to/images"
-  um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv"
-  detected_transcripts: "/path/to/detected_transcripts.csv"
-  input_vzg: "/path/to/sample.vzg"
-  metadata: "/path/to/entity_metadata.csv"
-  entity_by_gene: "/path/to/entity_by_gene.csv"
-  boundaries: "/path/to/segmentation.parquet"
+sample: "sample_name"
+algorithm_json: "/path/to/algorithm.json"
+images_dir: "/path/to/images"
+um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv"
+detected_transcripts: "/path/to/detected_transcripts.csv"
+input_vzg: "/path/to/sample.vzg"
+tile_size: 4096
+tile_overlap: 400
 ```
 
-The `metadata`, `entity_by_gene` and `boundaries` values are only required if running in `report_only` mode.
-
 Note that the `algorithm_json` file is temperamental. Check the [Vizgen documentation](https://vizgen.github.io/vizgen-postprocessing/segmentation_options/json_file_format.html) on the requirements.
-
-Currently, only one sample can be processed at one time.
 
 To run cell segmentation via VPT, you can run the pipeline using:
 
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \
-   --input samplesheet.yml \
-   --outdir <OUTDIR> \
-   --tile_size <tile_size> \
-   --tile_overlap <tile_overlap>
+   -params-file samplesheet.yml \
+   --outdir <OUTDIR>
 ```
 
 If you are running with Apptainer or Singularity, you will have to set the following environmental variable before running the pipeline:
@@ -70,10 +63,8 @@ Apptainer:
 export NXF_APPTAINER_HOME_MOUNT=true
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile apptainer \
-   --input samplesheet.yml \
-   --outdir <OUTDIR> \
-   --tile_size <tile_size> \
-   --tile_overlap <tile_overlap>
+   -params-file samplesheet.yml \
+   --outdir <OUTDIR>
 ```
 
 Singularity:
@@ -82,10 +73,8 @@ Singularity:
 export NXF_SINGULARITY_HOME_MOUNT=true
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile singularity \
-   --input samplesheet.yml \
-   --outdir <OUTDIR> \
-   --tile_size <tile_size> \
-   --tile_overlap <tile_overlap>
+   -params-file samplesheet.yml \
+   --outdir <OUTDIR>
 ```
 
 ### Merging channels
@@ -117,14 +106,23 @@ nextflow run WEHI-SODA-Hub/spatialvpt \
 
 ### Report-only mode
 
-If you would like to only generate a QC report, and you already have your metadata, cell_by_gene and boundary files, you can do so as follows:
+If you would like to only generate a QC report, and you already have your metadata,
+cell_by_gene and boundary files, you can specify those files in parameters in
+your samplesheet:
+
+```yaml
+report_only: true
+metadata: "/path/to/entity_metadata.csv"
+entity_by_gene: "/path/to/entity_by_gene.csv"
+boundaries: "/path/to/segmentation.parquet"
+```
+
 
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.yml \
-   --outdir <OUTDIR> \
-  --report_only true
+   --outdir <OUTDIR>
 ```
 
 > [!WARNING]

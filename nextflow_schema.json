@@ -10,18 +10,96 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["sample", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
                     "format": "file-path",
+                    "hidden": true
+                },
+                "sample": {
+                    "type": "string",
+                    "description": "Sample name.",
+                    "fa_icon": "fas fa-file-signature"
+                },
+                "algorithm_json": {
+                    "type": "string",
+                    "format": "file-path",
                     "exists": true,
-                    "schema": "assets/schema_input.json",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.(csv|yaml|yml)$",
-                    "description": "Path to comma-separated or YAML file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "mimetype": "test/json",
+                    "pattern": "^\\S+\\.(json)$",
+                    "description": "Path to the JSON file containing the algorithm parameters.",
+                    "help_text": "The JSON file should contain the parameters for the segmentation." ,
                     "fa_icon": "fas fa-file-csv"
+                },
+                "images_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the directory containing the images.",
+                    "help_text": "The directory should contain the images to be segmented.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "um_to_mosaic_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.(csv)$",
+                    "description": "Path to the CSV file containing the micron to mosaic conversion.",
+                    "help_text": "The CSV file should contain the conversion from micron to mosaic coordinates.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "input_vzg": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "application/octet-stream",
+                    "pattern": "^\\S+\\.(vzg)$",
+                    "description": "Path to the VZG file for visualisation in MERSCOPE visualiser.",
+                    "help_text": "The CSV file should contain the input data for the segmentation.",
+                    "fa_icon": "fas fa-file"
+                },
+                "detected_transcripts": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "application/octet-stream",
+                    "pattern": "^\\S+\\.(csv)$",
+                    "description": "Path to the CSV file containing the detected transcripts.",
+                    "help_text": "The CSV file should contain the detected transcripts.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "metadata": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "test/csv",
+                    "pattern": "^\\S+\\.(csv)$",
+                    "description": "Path to the CSV file containing cell metadata.",
+                    "help_text": "Optional input for generating report only.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "entity_by_gene": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "test/csv",
+                    "pattern": "^\\S+\\.(csv)$",
+                    "description": "Path to the CSV file containing entity by gene.",
+                    "help_text": "Optional input for generating report only.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "boundaries": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream",
+                    "pattern": "^\\S+\\.(parquet)$",
+                    "description": "Path to parquet file containing boundaries.",
+                    "help_text": "Optional input for generating report only.",
+                    "fa_icon": "fas fa-file"
+                },
+                "combine_channel_settings": {
+                    "type": "string",
+                    "description": "String containing the channel merging settings.",
+                    "help_text": "Combine channel settings in format 'channel1+channel2+channel3=merged_channel_name:z1:t512:m0.108' where z, t and m values are the z-index, tile size and microns per pixel"
                 },
                 "outdir": {
                     "type": "string",

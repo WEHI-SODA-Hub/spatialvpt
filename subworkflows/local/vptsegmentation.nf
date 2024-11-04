@@ -17,36 +17,29 @@ include { methodsDescriptionText    } from '../../subworkflows/local/utils_nfcor
 workflow VPTSEGMENTATION {
 
     take:
-    ch_samplesheet   // channel: samplesheet read in from --input
-    tile_size        // value: defined by params.tile_size (int)
-    tile_overlap     // value: defined by params.tile_overlap (int)
-    update_vzg       // value: defined by params.update_vzg (boolean)
-    combine_channels // value: defined by params.combine_channels (boolean)
+    meta
+    algorithm_json
+    images_dir
+    um_to_mosaic_file
+    update_vzg
+    input_vzg
+    detected_txs
+    tile_size
+    tile_overlap
+    combine_channels
+    combine_channel_settings
 
     main:
 
     ch_versions = Channel.empty()
 
-    // get images channel for combine channels input
-    ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-            [meta, detected_txs]
-            [meta, images]
-        }
+    // Create images channel
+    meta.concat(images_dir)
         .set{ ch_images }
-
-    // Prepare input for segmentation
-    ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-            [meta, alg_json, images, mosaic, detected_txs, vzg] }
-        .set{ ch_segmentation_input }
 
     if (combine_channels.value) {
         // Extract and parse combine channel settings
-        ch_samplesheet
-            .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-                combine_settings}
-            .first()
+         Channel.of(combine_channel_settings)
             .map { comb_str ->
                 def channels_to_merge = comb_str
                     .split('=')[0]
@@ -90,7 +83,10 @@ workflow VPTSEGMENTATION {
         // MODULE: Run vpt prepare-segmentation
         //
         PREPARE_SEGMENTATION (
-            ch_segmentation_input,
+            meta,
+            algorithm_json,
+            images_dir,
+            um_to_mosaic_file,
             tile_size,
             tile_overlap,
             COMBINECHANNELS.out.done
@@ -101,7 +97,10 @@ workflow VPTSEGMENTATION {
         // MODULE: Run vpt prepare-segmentation
         //
         PREPARE_SEGMENTATION (
-            ch_segmentation_input,
+            meta,
+            algorithm_json,
+            images_dir,
+            um_to_mosaic_file,
             tile_size,
             tile_overlap,
             true
@@ -109,9 +108,6 @@ workflow VPTSEGMENTATION {
     }
 
     // Create list sequence of 0..N tiles
-    // TODO: determine whether multi-sample functionality
-    // is required -- with this current structure, we can
-    // only support processing a single sample at a time
     PREPARE_SEGMENTATION.out.segmentation_files
         .map { meta, seg_json, images, alg_alg -> seg_json }
         .splitJson(path: 'window_grid' )
@@ -151,26 +147,17 @@ workflow VPTSEGMENTATION {
     // MODULE: Run vpt derive-entity-metadata
     //
     DERIVE_ENTITY_METADATA(
+        meta,
         COMPILE_TILE_SEGMENTATION.out.micron_space
     )
-
-    // Extract detected transcripts from samplesheet
-    ch_samplesheet
-        .map { meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-            detected_txs }
-        .set{ ch_detected_txs }
-
-    // Combine detected transcripts with micron space file
-    // to create input for partition-transcripts step
-    COMPILE_TILE_SEGMENTATION.out.micron_space
-        .combine(ch_detected_txs)
-        .set{ ch_partition_txs_input }
 
     //
     // MODULE: Run vpt partition-transcripts
     //
     PARTITION_TRANSCRIPTS(
-        ch_partition_txs_input
+        meta,
+        COMPILE_TILE_SEGMENTATION.out.micron_space,
+        detected_txs
     )
 
     // Output channels
@@ -185,40 +172,26 @@ workflow VPTSEGMENTATION {
 
     ch_vzg = Channel.empty()
     if (update_vzg.value) {
-        // Put together input for update-vzg
-        ch_samplesheet.map {
-                meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-                [meta, vzg]
-            }
-            .join(ch_segmentation_output)
-            .join(ch_entity_by_gene)
-            .join(ch_entity_metadata)
-            .flatten()
-            .toList()
-            .set{ ch_update_vzg_input }
-
         //
         // MODULE: Run vpt update-vzg
         //
         UPDATE_VZG(
-            ch_update_vzg_input
+            meta,
+            input_vzg,
+            ch_segmentation_output,
+            ch_entity_by_gene,
+            ch_entity_metadata
         )
 
         ch_vzg = UPDATE_VZG.out.vzg_file
     }
 
     // get transcripts channel for downstream output
-    ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-            [meta, detected_txs]
-        }
+    meta.concat(detected_txs)
         .set{ ch_transcripts }
 
     // get micron_to_mosaic channel for downstream output
-    ch_samplesheet.map {
-            meta, alg_json, images, mosaic, detected_txs, vzg, metadata, entity_by_gene, boundaries, combine_settings ->
-            [meta, mosaic]
-        }
+    meta.concat(um_to_mosaic_file)
         .set{ ch_mosaic }
 
     //

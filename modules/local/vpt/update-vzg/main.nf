@@ -7,10 +7,14 @@ process UPDATE_VZG {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(input_vzg), path(micron_space), path(entity_by_gene), path(metadata)
+    val(meta)
+    path(input_vzg)
+    path(micron_space)
+    path(entity_by_gene)
+    path(metadata)
 
     output:
-    tuple val(meta), path("*.vzg"), emit: vzg_file
+    path("*.vzg"), emit: vzg_file
     path  "versions.yml"          , emit: versions
 
     when:
