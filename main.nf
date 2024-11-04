@@ -21,64 +21,6 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spat
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow WEHISODAHUB_SPATIALVPT {
-
-    take:
-    sample
-    algorithm_json
-    images_dir
-    um_to_mosaic_file
-    detected_transcripts
-    custom_weights
-    update_vzg
-    input_vzg
-    tile_size
-    tile_overlap
-    report_only
-    metadata
-    entity_by_gene
-    boundaries
-    combine_channels
-    combine_channel_settings
-
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    SPATIALVPT (
-        sample,
-        algorithm_json,
-        images_dir,
-        um_to_mosaic_file,
-        detected_transcripts,
-        custom_weights,
-        update_vzg,
-        input_vzg,
-        tile_size,
-        tile_overlap,
-        report_only,
-        metadata,
-        entity_by_gene,
-        boundaries,
-        combine_channels,
-        combine_channel_settings
-    )
-
-    emit:
-    report          = SPATIALVPT.out.report
-    versions        = SPATIALVPT.out.versions
-
-}
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -118,7 +60,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    WEHISODAHUB_SPATIALVPT (
+    SPATIALVPT (
         PIPELINE_INITIALISATION.out.sample,
         PIPELINE_INITIALISATION.out.algorithm_json,
         PIPELINE_INITIALISATION.out.images_dir,
