@@ -39,6 +39,9 @@ workflow VPTSEGMENTATION {
         .set{ ch_images }
 
     if (combine_channels.value) {
+        // Throw an error as this functionality doesn't work properly
+        error "Combine channel functionality is currently unsupported"
+
         // Extract and parse combine channel settings
         Channel.of(combine_channel_settings)
             .map { comb_str ->

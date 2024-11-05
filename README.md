@@ -77,7 +77,33 @@ nextflow run WEHI-SODA-Hub/spatialvpt \
    --outdir <OUTDIR>
 ```
 
+### Custom weights
+
+You can use a custom weights file by specifying the _full path_ in your
+parameters (samplesheet) file:
+
+```yaml
+custom_weights: "/path/to/custom_weights_file"
+```
+
+Now you need to add the _file name only_ to your algorithm JSON file, e.g:
+
+```json
+"segmentation_properties": {
+  "model": "cyto2",
+  "model_dimensions": "2D",
+  "custom_weights": "custom_weights_file",
+  "channel_map": {
+    "red": "Cellbound1",
+    "green": "Cellbound3",
+    "blue": "DAPI"
+  }
+},
+```
+
 ### Merging channels
+
+**NOTE that this functionality currently does not work**
 
 If you want to merge channels, you will also need to specify this in the samplesheet file via:
 
