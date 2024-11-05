@@ -51,6 +51,7 @@ workflow PIPELINE_INITIALISATION {
     boundaries        //  string: Path to parquet boundaries file (optional, onle required for report_only mode)
     combine_channels  // boolean: Whether to combine channels; requires settings to be specified in sample sheet
     combine_channel_settings // string: Settings to combine channels
+    combined_images_dir // string: If combining images, output them here
 
     main:
 
@@ -106,6 +107,16 @@ workflow PIPELINE_INITIALISATION {
         ch_bound    = Channel.fromPath(boundaries, checkIfExists: true)
     }
 
+    // Set combined image directory if using combine images functionality
+    ch_comb_imgs = Channel.empty()
+    if (combine_channels.value) {
+        // create combined channels dir if it doesn't exist
+        if (!file(combined_images_dir).exists()) {
+            file(combined_images_dir).mkdirs()
+        }
+        ch_comb_imgs = Channel.fromPath(combined_images_dir)
+    }
+
     // Use blank file definition for custom weights unless custom_weights
     // is defined in config, in which case construct a path channel
     ch_weights = Channel.fromPath('.')
@@ -137,6 +148,7 @@ workflow PIPELINE_INITIALISATION {
     boundaries               = ch_bound
     combine_channels         = combine_channels
     combine_channel_settings = combine_channel_settings
+    combined_images_dir      = ch_comb_imgs
     versions                 = ch_versions
 }
 

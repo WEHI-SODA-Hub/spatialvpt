@@ -16,9 +16,9 @@ process VPT_GENERATESEGMENTATIONMETRICS {
     path(micron_to_mosaic)
 
     output:
-    path("*.html"), emit: report
-    path("*.csv"),  emit: metrics
-    path "versions.yml"           ,  emit: versions
+    path("*.html"),       emit: report
+    path("*.csv"),        emit: metrics
+    path "versions.yml",  emit: versions
 
     when:
     task.ext.when == null || task.ext.when

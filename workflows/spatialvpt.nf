@@ -32,6 +32,7 @@ workflow SPATIALVPT {
     boundaries
     combine_channels
     combine_channel_settings
+    combined_images_dir
 
     main:
 
@@ -69,7 +70,8 @@ workflow SPATIALVPT {
             tile_size,
             tile_overlap,
             combine_channels,
-            combine_channel_settings
+            combine_channel_settings,
+            combined_images_dir
         )
 
         // compile channels for input to generate-segmentation-metrics
@@ -93,7 +95,9 @@ workflow SPATIALVPT {
             ch_mosaic
         )
 
-        ch_versions = VPTSEGMENTATION.out.versions
+        VPTSEGMENTATION.out.versions
+            .combine(VPT_GENERATESEGMENTATIONMETRICS.out.versions)
+            .set{ ch_versions }
     }
 
     emit:
