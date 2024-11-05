@@ -39,6 +39,11 @@
                     "help_text": "The directory should contain the images to be segmented.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "images_regex": {
+                    "type": "string",
+                    "description": "Regex pattern for selecting images.",
+                    "help_text": "Optional regex pattern for selecting images in the images directory."
+                },
                 "um_to_mosaic_file": {
                     "type": "string",
                     "format": "file-path",

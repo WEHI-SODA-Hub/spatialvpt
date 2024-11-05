@@ -10,6 +10,7 @@ process PREPARE_SEGMENTATION {
     val(meta)
     path(algorithm_json)
     path(input_images)
+    val(images_regex)
     path(um_to_mosaic_file)
     val(tile_size)
     val(tile_overlap)
@@ -33,7 +34,7 @@ process PREPARE_SEGMENTATION {
         prepare-segmentation \\
         $args \\
         --segmentation-algorithm $algorithm_json \\
-        --input-images $input_images \\
+        --input-images "${input_images}/${images_regex}" \\
         --input-micron-to-mosaic $um_to_mosaic_file \\
         --output-path . \\
         --tile-size $tile_size \\

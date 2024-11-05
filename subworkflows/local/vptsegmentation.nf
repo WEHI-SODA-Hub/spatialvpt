@@ -20,6 +20,7 @@ workflow VPTSEGMENTATION {
     meta
     algorithm_json
     images_dir
+    images_regex
     um_to_mosaic_file
     detected_txs
     custom_weights
@@ -104,6 +105,7 @@ workflow VPTSEGMENTATION {
             meta,
             algorithm_json,
             images_dir,
+            images_regex,
             um_to_mosaic_file,
             tile_size,
             tile_overlap,

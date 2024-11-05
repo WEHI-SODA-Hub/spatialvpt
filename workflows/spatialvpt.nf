@@ -19,6 +19,7 @@ workflow SPATIALVPT {
     sample
     algorithm_json
     images_dir
+    images_regex
     um_to_mosaic_file
     detected_transcripts
     custom_weights
@@ -48,6 +49,7 @@ workflow SPATIALVPT {
             metadata,
             detected_transcripts,
             images_dir,
+            images_regex,
             boundaries,
             um_to_mosaic_file
         )
@@ -61,6 +63,7 @@ workflow SPATIALVPT {
             meta,
             algorithm_json,
             images_dir,
+            images_regex,
             um_to_mosaic_file,
             detected_transcripts,
             custom_weights,

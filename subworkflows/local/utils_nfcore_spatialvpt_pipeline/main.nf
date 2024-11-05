@@ -38,6 +38,7 @@ workflow PIPELINE_INITIALISATION {
     sample            //  string: Sample name
     algorithm_json    //  string: Path to algorithm JSON file
     images_dir        //  string: Directory containing image files
+    images_regex      //  string: Regex string for input images
     um_to_mosaic_file //  string: Path to micron to mosaic file
     detected_transcripts // string: Path to detected transcripts file
     custom_weights    //  string: Path to file containing custom weights (optional)
@@ -95,6 +96,9 @@ workflow PIPELINE_INITIALISATION {
     ch_mosaic    = Channel.fromPath(um_to_mosaic_file, checkIfExists: true)
     ch_txs       = Channel.fromPath(detected_transcripts, checkIfExists: true)
 
+    // Construct channel from image regex
+    ch_images_regex = Channel.of(images_regex)
+
     // These channels are only required if running in report_only mode
     ch_metadata  = Channel.empty()
     ch_ebgene    = Channel.empty()
@@ -124,6 +128,7 @@ workflow PIPELINE_INITIALISATION {
     sample                   = sample
     algorithm_json           = ch_alg_json
     images_dir               = ch_images
+    images_regex             = ch_images_regex
     um_to_mosaic_file        = ch_mosaic
     detected_transcripts     = ch_txs
     custom_weights           = ch_weights
