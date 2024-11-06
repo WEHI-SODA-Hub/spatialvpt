@@ -29,17 +29,19 @@
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-First, prepare a samplesheet with your input data that looks as follows:
+First, prepare a parameters file with your input data that looks as follows:
 
-`samplesheet.yml`:
+`params.yml`:
 
 ```yaml
 sample: "sample_name"
+outdir: "/path/to/results"
 algorithm_json: "/path/to/algorithm.json"
 images_dir: "/path/to/images"
 images_regex: "mosaic_(?P<stain>[\\w|-]+)_z(?P<z>[0-9]+).tif"
 um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv"
 detected_transcripts: "/path/to/detected_transcripts.csv"
+update_vzg: true
 input_vzg: "/path/to/sample.vzg"
 tile_size: 4096
 tile_overlap: 400
@@ -52,7 +54,7 @@ To run cell segmentation via VPT, you can run the pipeline using:
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \
-   -params-file samplesheet.yml \
+   -params-file params.yml \
    --outdir <OUTDIR>
 ```
 
@@ -64,7 +66,7 @@ Apptainer:
 export NXF_APPTAINER_HOME_MOUNT=true
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile apptainer \
-   -params-file samplesheet.yml \
+   -params-file params.yml \
    --outdir <OUTDIR>
 ```
 
@@ -74,14 +76,14 @@ Singularity:
 export NXF_SINGULARITY_HOME_MOUNT=true
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile singularity \
-   -params-file samplesheet.yml \
+   -params-file params.yml \
    --outdir <OUTDIR>
 ```
 
 ### Custom weights
 
 You can use a custom weights file by specifying the _full path_ in your
-parameters (samplesheet) file:
+parameters file:
 
 ```yaml
 custom_weights: "/path/to/custom_weights_file"
@@ -106,7 +108,7 @@ Now you need to add the _file name only_ to your algorithm JSON file, e.g:
 
 **NOTE that this functionality currently does not work**
 
-If you want to merge channels, you will also need to specify this in the samplesheet file via:
+If you want to merge channels, you will also need to specify this in the params file via:
 
 ```yaml
 combine_channel_settings: "Channel1+Channel2=Channel:z4:t512:m0.108"
@@ -124,18 +126,34 @@ Make sure to set the merged channel name in your `algorithm.json` file. Now run 
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \
-   --input samplesheet.yml \
+   --input params.yml \
    --outdir <OUTDIR> \
    --tile_size <tile_size> \
    --tile_overlap <tile_overlap> \
    --combine_channels true
 ```
 
+### Report options
+
+You can also set extra options for naming channels and filtering by volume and
+transcript thresholds when generating reports. See the [VPT documentation](https://vizgen.github.io/vizgen-postprocessing/command_line_interface/index.html#generate-segmentation-metrics)
+for more details.
+
+For example:
+
+```yaml
+red_stain_name: "Cellbound1"
+green_stain_name: "Cellbound2"
+blue_stain_name: "DAPI"
+transcript_count_threshold: 100
+volume_filter_threshold: 200
+```
+
 ### Report-only mode
 
 If you would like to only generate a QC report, and you already have your metadata,
 cell_by_gene and boundary files, you can specify those files in parameters in
-your samplesheet:
+your params file:
 
 ```yaml
 report_only: true
@@ -147,7 +165,7 @@ boundaries: "/path/to/segmentation.parquet"
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \
-   --input samplesheet.yml \
+   --input params.yml \
    --outdir <OUTDIR>
 ```
 
