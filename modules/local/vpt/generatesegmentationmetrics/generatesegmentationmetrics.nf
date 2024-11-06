@@ -14,6 +14,11 @@ process VPT_GENERATESEGMENTATIONMETRICS {
     path(images)
     path(boundaries)
     path(micron_to_mosaic)
+    val(red_stain_name)
+    val(green_stain_name)
+    val(blue_stain_name)
+    val(transcript_count_threshold)
+    val(volume_filter_threshold)
 
     output:
     path("*.html"), emit: report
@@ -29,6 +34,7 @@ process VPT_GENERATESEGMENTATIONMETRICS {
     }
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def red_stain_param = red_stain_name ? "--red-stain-name ${red_stain_name}" : ''
     """
     vpt --verbose \\
         generate-segmentation-metrics \\
@@ -39,6 +45,11 @@ process VPT_GENERATESEGMENTATIONMETRICS {
         --input-images $images \\
         --input-boundaries $boundaries \\
         --input-micron-to-mosaic $micron_to_mosaic \\
+        ${red_stain_param} \\
+        --green-stain-name ${green_stain_name} \\
+        --blue-stain-name ${blue_stain_name} \\
+        --transcript-count-filter-threshold ${transcript_count_threshold} \\
+        --volume-filter-threshold ${volume_filter_threshold} \\
         --output-csv ${prefix}_metrics.csv \\
         --output-report ${prefix}_metrics.html
 

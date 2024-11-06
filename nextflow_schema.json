@@ -115,6 +115,39 @@
                 }
             }
         },
+        "report_options": {
+            "title": "Report options",
+            "type": "object",
+            "fa_icon": "fas fa-cogs",
+            "description": "Options for generating report.",
+            "properties": {
+                "red_stain_name": {
+                    "type": "string",
+                    "description": "Stain name for red channel.",
+                    "fa_icon": "fas fa-palette"
+                },
+                "green_stain_name": {
+                    "type": "string",
+                    "description": "Stain name for green channel.",
+                    "fa_icon": "fas fa-palette"
+                },
+                "blue_stain_name": {
+                    "type": "string",
+                    "description": "Stain name for blue channel.",
+                    "fa_icon": "fas fa-palette"
+                },
+                "transcript_count_threshold": {
+                    "type": "integer",
+                    "description": "Cell transcript count threshold for computing metrics and clustering.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "volume_filter_threshold": {
+                    "type": "integer",
+                    "description": "Cell volume threshold for computing metrics and clustering.",
+                    "fa_icon": "fas fa-filter"
+                }
+            }
+        },
         "report_only_options": {
             "title": "Report only options",
             "type": "object",
@@ -359,6 +392,9 @@
         },
         {
             "$ref": "#/definitions/segmentation_options"
+        },
+        {
+            "$ref": "#/definitions/report_options"
         },
         {
             "$ref": "#/definitions/report_only_options"

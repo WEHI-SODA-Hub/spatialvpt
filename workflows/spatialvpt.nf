@@ -27,6 +27,11 @@ workflow SPATIALVPT {
     input_vzg
     tile_size
     tile_overlap
+    red_stain_name
+    green_stain_name
+    blue_stain_name
+    transcript_count_threshold
+    volume_filter_threshold
     report_only
     metadata
     entity_by_gene
@@ -49,9 +54,13 @@ workflow SPATIALVPT {
             metadata,
             detected_transcripts,
             images_dir,
-            images_regex,
             boundaries,
-            um_to_mosaic_file
+            um_to_mosaic_file,
+            red_stain_name,
+            green_stain_name,
+            blue_stain_name,
+            transcript_count_threshold,
+            volume_filter_threshold
         )
 
         ch_versions = VPT_GENERATESEGMENTATIONMETRICS.out.versions
@@ -93,7 +102,12 @@ workflow SPATIALVPT {
             ch_transcripts,
             ch_images,
             ch_boundaries,
-            ch_mosaic
+            ch_mosaic,
+            red_stain_name,
+            green_stain_name,
+            blue_stain_name,
+            transcript_count_threshold,
+            volume_filter_threshold
         )
 
         ch_versions = VPTSEGMENTATION.out.versions

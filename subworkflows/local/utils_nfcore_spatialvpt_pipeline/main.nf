@@ -46,6 +46,11 @@ workflow PIPELINE_INITIALISATION {
     input_vzg         //  string: Path to VZG file for MERSCOPE visualisation
     tile_size         // integer: Pixels tile width and height
     tile_overlap      // integer: Overlap between adjacent tiles
+    red_stain_name    //  string: Name for red channel in report
+    green_stain_name  //  string: Name for green channel in report
+    blue_stain_name   //  string: Name for blue channel in report
+    transcript_count_threshold // integer: Filter threshold for transript counts
+    volume_filter_threshold // integer: Filter threshold for cell volume
     report_only       // boolean: Whether to run vpt generate-segmentation-metrics only on already segmented data
     metadata          //  string: Path to metadata file (optional, only required for report_only mode)
     entity_by_gene    //  string: Path to entity_by_gene file (optional, only required for report_only mode)
@@ -117,32 +122,50 @@ workflow PIPELINE_INITIALISATION {
         ch_weights = Channel.fromPath(custom_weights, checkIfExists: true)
     }
 
-    if (!tile_size.toString().isInteger()) {
-        error "The tile_size parameter is not a valid integer"
+    // Validate integer parameters
+    if (!transcript_count_threshold.toString().isInteger() &&
+        transcript_count_threshold > 0) {
+        error "The transcript_count_threshold parameter is not a valid positive integer"
     }
-    if (!tile_overlap.toString().isInteger()) {
-        error "The tile_size parameter is not a valid integer"
+
+    if (!volume_filter_threshold.toString().isInteger() &&
+        volume_filter_threshold > 0) {
+        error "The volume_filter_threshold parameter is not a valid positive integer"
+    }
+
+    if (!tile_size.toString().isInteger() &&
+        tile_size > 0) {
+        error "The tile_size parameter is not a valid positive integer"
+    }
+    if (!tile_overlap.toString().isInteger() &&
+        tile_overlap > 0) {
+        error "The tile_size parameter is not a valid positive integer"
     }
 
     emit:
-    sample                   = sample
-    algorithm_json           = ch_alg_json
-    images_dir               = ch_images
-    images_regex             = ch_images_regex
-    um_to_mosaic_file        = ch_mosaic
-    detected_transcripts     = ch_txs
-    custom_weights           = ch_weights
-    update_vzg               = update_vzg
-    input_vzg                = ch_input_vzg
-    tile_size                = tile_size
-    tile_overlap             = tile_overlap
-    report_only              = report_only
-    metadata                 = ch_metadata
-    entity_by_gene           = ch_ebgene
-    boundaries               = ch_bound
-    combine_channels         = combine_channels
-    combine_channel_settings = combine_channel_settings
-    versions                 = ch_versions
+    sample                     = sample
+    algorithm_json             = ch_alg_json
+    images_dir                 = ch_images
+    images_regex               = ch_images_regex
+    um_to_mosaic_file          = ch_mosaic
+    detected_transcripts       = ch_txs
+    custom_weights             = ch_weights
+    update_vzg                 = update_vzg
+    input_vzg                  = ch_input_vzg
+    tile_size                  = tile_size
+    tile_overlap               = tile_overlap
+    red_stain_name             = red_stain_name
+    green_stain_name           = green_stain_name
+    blue_stain_name            = blue_stain_name
+    transcript_count_threshold = transcript_count_threshold
+    volume_filter_threshold    = volume_filter_threshold
+    report_only                = report_only
+    metadata                   = ch_metadata
+    entity_by_gene             = ch_ebgene
+    boundaries                 = ch_bound
+    combine_channels           = combine_channels
+    combine_channel_settings   = combine_channel_settings
+    versions                   = ch_versions
 }
 
 /*
