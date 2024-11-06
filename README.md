@@ -37,7 +37,7 @@ First, prepare a samplesheet with your input data that looks as follows:
 sample: "sample_name"
 algorithm_json: "/path/to/algorithm.json"
 images_dir: "/path/to/images"
-images_regex: "mosaic_(?P<stain>[\w|-]+)_z(?P<z>[0-9]+).tif"
+images_regex: "mosaic_(?P<stain>[\\w|-]+)_z(?P<z>[0-9]+).tif"
 um_to_mosaic_file: "/path/to/micron_to_mosaic_pixel_transform.csv"
 detected_transcripts: "/path/to/detected_transcripts.csv"
 input_vzg: "/path/to/sample.vzg"
