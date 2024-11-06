@@ -1,6 +1,6 @@
 process PARTITION_TRANSCRIPTS {
     tag "$meta.id"
-    label 'process_large'
+    label 'process_high'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :

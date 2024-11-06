@@ -1,6 +1,6 @@
 process PREPARE_SEGMENTATION {
     tag "$meta.id"
-    label 'process_small'
+    label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :

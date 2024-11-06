@@ -71,7 +71,7 @@
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
-                    "mimetype": "application/octet-stream",
+                    "mimetype": "text/csv",
                     "pattern": "^\\S+\\.(csv)$",
                     "description": "Path to the CSV file containing the detected transcripts.",
                     "help_text": "The CSV file should contain the detected transcripts.",
@@ -346,7 +346,8 @@
                 "multiqc_methods_description": {
                     "type": "string",
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
                 },
                 "validate_params": {
                     "type": "boolean",
