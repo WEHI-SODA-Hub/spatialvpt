@@ -21,9 +21,9 @@ process VPT_GENERATESEGMENTATIONMETRICS {
     val(volume_filter_threshold)
 
     output:
-    path("*.html"), emit: report
-    path("*.csv"),  emit: metrics
-    path "versions.yml"           ,  emit: versions
+    path("*.html"),       emit: report
+    path("*.csv"),        emit: metrics
+    path "versions.yml",  emit: versions
 
     when:
     task.ext.when == null || task.ext.when

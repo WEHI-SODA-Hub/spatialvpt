@@ -30,6 +30,7 @@ workflow VPTSEGMENTATION {
     tile_overlap
     combine_channels
     combine_channel_settings
+    combined_images_dir
 
     main:
 
@@ -39,12 +40,13 @@ workflow VPTSEGMENTATION {
     meta.concat(images_dir)
         .set{ ch_images }
 
+    println(combine_channels.value)
     if (combine_channels.value) {
         // Throw an error as this functionality doesn't work properly
         error "Combine channel functionality is currently unsupported"
 
         // Extract and parse combine channel settings
-        Channel.of(combine_channel_settings)
+        combine_channel_settings
             .map { comb_str ->
                 def channels_to_merge = comb_str
                     .split('=')[0]
@@ -78,10 +80,10 @@ workflow VPTSEGMENTATION {
         //
         // MODULE: Run combine_channels script
         //
-        COMBINECHANNELS(
-            ch_images,
+        COMBINECHANNELS (
+            meta.merge(images_dir),
             ch_combine_settings,
-            ch_images.map { meta, images -> images }
+            combined_images_dir
         )
 
         //
@@ -90,7 +92,8 @@ workflow VPTSEGMENTATION {
         PREPARE_SEGMENTATION (
             meta,
             algorithm_json,
-            images_dir,
+            combined_images_dir,
+            images_regex,
             um_to_mosaic_file,
             tile_size,
             tile_overlap,

@@ -203,6 +203,13 @@
                     "type": "string",
                     "description": "String containing the channel merging settings.",
                     "help_text": "Combine channel settings in format 'channel1+channel2+channel3=merged_channel_name:z1:t512:m0.108' where z, t and m values are the z-index, tile size and microns per pixel"
+                },
+                "combined_images_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the directory containing the combined images.",
+                    "help_text": "The directory should contain the combined images.",
+                    "fa_icon": "fas fa-folder-open"
                 }
             }
         },

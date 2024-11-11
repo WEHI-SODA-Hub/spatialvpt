@@ -91,12 +91,15 @@ def save_tif(img_combined, save_path, idx, img_name, tile_size,
         return
 
     with TiffWriter(output_file, bigtiff=True) as tif:
-        options = dict(tile=(tile_size, tile_size), compression='zlib',
-                       photometric='minisblack',
-                       metadata={'axes': 'YX',
-                                 'PhysicalSizeX': microns_per_pixel,
-                                 'PhysicalSizeY': microns_per_pixel}
-                       )
+        options = dict(
+           # tile=(tile_size, tile_size),
+           compression='none',
+           photometric='minisblack',
+           metadata={'axes': 'YX',
+                     'PhysicalSizeX': microns_per_pixel,
+                     'PhysicalSizeY': microns_per_pixel},
+           rowsperstrip=img_combined.shape[0]
+        )
         tif.write(img_combined, **options)
 
 

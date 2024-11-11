@@ -32,6 +32,7 @@ process COMBINECHANNELS {
         --zindex $zindex \\
         --tile-size $combine_tile_size \\
         --microns-per-pixel $microns_per_pixel \\
+        --convert-dapi \\
         --outdir .
 
     cat <<-END_VERSIONS > versions.yml
