@@ -188,31 +188,6 @@
                 }
             }
         },
-        "combine_channel_options": {
-            "title": "Combine channel options",
-            "type": "object",
-            "fa_icon": "fas fa-cogs",
-            "description": "Options for combining channels.",
-            "properties": {
-                "combine_channels": {
-                    "type": "boolean",
-                    "description": "Whether to combine input channels. Channel merging details must be provided in sample sheet in format 'channel1+channel2=merged_channel:z1' where z1 is the z-index.",
-                    "fa_icon": "fas fa-sync"
-                },
-                "combine_channel_settings": {
-                    "type": "string",
-                    "description": "String containing the channel merging settings.",
-                    "help_text": "Combine channel settings in format 'channel1+channel2+channel3=merged_channel_name:z1:t512:m0.108' where z, t and m values are the z-index, tile size and microns per pixel"
-                },
-                "combined_images_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Path to the directory containing the combined images.",
-                    "help_text": "The directory should contain the combined images.",
-                    "fa_icon": "fas fa-folder-open"
-                }
-            }
-        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -406,9 +381,6 @@
         },
         {
             "$ref": "#/definitions/report_only_options"
-        },
-        {
-            "$ref": "#/definitions/combine_channel_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

@@ -58,10 +58,7 @@ workflow {
         params.report_only,
         params.metadata,
         params.entity_by_gene,
-        params.boundaries,
-        params.combine_channels,
-        params.combine_channel_settings,
-        params.combined_images_dir
+        params.boundaries
     )
 
     //
@@ -87,10 +84,7 @@ workflow {
         PIPELINE_INITIALISATION.out.report_only,
         PIPELINE_INITIALISATION.out.metadata,
         PIPELINE_INITIALISATION.out.entity_by_gene,
-        PIPELINE_INITIALISATION.out.boundaries,
-        PIPELINE_INITIALISATION.out.combine_channels,
-        PIPELINE_INITIALISATION.out.combine_channel_settings,
-        PIPELINE_INITIALISATION.out.combined_images_dir
+        PIPELINE_INITIALISATION.out.boundaries
     )
 
     //

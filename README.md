@@ -104,35 +104,6 @@ Now you need to add the _file name only_ to your algorithm JSON file, e.g:
 },
 ```
 
-### Merging channels
-
-**NOTE that this functionality currently does not work**
-
-If you want to merge channels, you will also need to specify this in the params file via:
-
-```yaml
-combine_channel_settings: "Channel1+Channel2=Channel:z4:t512:m0.108"
-```
-
-The format is in four parts separated by colons:
-
-- `Channel1+Channel2` -- this indicates the channels to merge separated by `+`
-- `Channel` -- merged channel name (the `mosaic_` prefix and `_z` postfix are added automatically
-- `t512` -- tile size to use for the merged image
-- `m0.108` -- micron per pixel value to used for the merged image
-
-Make sure to set the merged channel name in your `algorithm.json` file. Now run the pipeline as follows:
-
-```bash
-nextflow run WEHI-SODA-Hub/spatialvpt \
-   -profile <docker/singularity/.../institute> \
-   --input params.yml \
-   --outdir <OUTDIR> \
-   --tile_size <tile_size> \
-   --tile_overlap <tile_overlap> \
-   --combine_channels true
-```
-
 ### Report options
 
 You can also set extra options for naming channels and filtering by volume and

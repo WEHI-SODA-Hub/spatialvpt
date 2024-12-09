@@ -36,9 +36,6 @@ workflow SPATIALVPT {
     metadata
     entity_by_gene
     boundaries
-    combine_channels
-    combine_channel_settings
-    combined_images_dir
 
     main:
 
@@ -80,10 +77,7 @@ workflow SPATIALVPT {
             update_vzg,
             input_vzg,
             tile_size,
-            tile_overlap,
-            combine_channels,
-            combine_channel_settings,
-            combined_images_dir
+            tile_overlap
         )
 
         // compile channels for input to generate-segmentation-metrics

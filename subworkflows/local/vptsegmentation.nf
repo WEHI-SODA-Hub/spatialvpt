@@ -4,7 +4,6 @@
 //
 
 include { paramsSummaryMap          } from 'plugin/nf-validation'
-include { COMBINECHANNELS           } from '../../modules/local/combinechannels/main'
 include { PREPARE_SEGMENTATION      } from '../../modules/local/vpt/prepare-segmentation/main'
 include { RUN_SEGMENTATION_ON_TILE  } from '../../modules/local/vpt/run-segmentation-on-tile/main'
 include { COMPILE_TILE_SEGMENTATION } from '../../modules/local/vpt/compile-tile-segmentation/main'
@@ -28,9 +27,6 @@ workflow VPTSEGMENTATION {
     input_vzg
     tile_size
     tile_overlap
-    combine_channels
-    combine_channel_settings
-    combined_images_dir
 
     main:
 
@@ -40,81 +36,19 @@ workflow VPTSEGMENTATION {
     meta.concat(images_dir)
         .set{ ch_images }
 
-    println(combine_channels.value)
-    if (combine_channels.value) {
-        // Throw an error as this functionality doesn't work properly
-        error "Combine channel functionality is currently unsupported"
-
-        // Extract and parse combine channel settings
-        combine_channel_settings
-            .map { comb_str ->
-                def channels_to_merge = comb_str
-                    .split('=')[0]
-                    .replace('+', ',')
-
-                def merged_channel = comb_str
-                    .split('=')[1]
-                    .split(':')[0]
-
-                def z_index = comb_str
-                    .split('=')[1]
-                    .split(':')[1]
-                    .replace('z', '')
-
-                def tile_size = comb_str
-                    .split('=')[1]
-                    .split(':')[2]
-                    .replace('t', '')
-
-                def mpp = comb_str
-                    .split('=')[1]
-                    .split(':')[3]
-                    .replace('m', '')
-
-                return [channels_to_merge,
-                        'mosaic_' + merged_channel + '_z',
-                        z_index, tile_size, mpp]
-            }
-            .set{ ch_combine_settings }
-
-        //
-        // MODULE: Run combine_channels script
-        //
-        COMBINECHANNELS (
-            meta.merge(images_dir),
-            ch_combine_settings,
-            combined_images_dir
-        )
-
-        //
-        // MODULE: Run vpt prepare-segmentation
-        //
-        PREPARE_SEGMENTATION (
-            meta,
-            algorithm_json,
-            combined_images_dir,
-            images_regex,
-            um_to_mosaic_file,
-            tile_size,
-            tile_overlap,
-            COMBINECHANNELS.out.done
-        )
-    } else {
-        // No channel combination
-        //
-        // MODULE: Run vpt prepare-segmentation
-        //
-        PREPARE_SEGMENTATION (
-            meta,
-            algorithm_json,
-            images_dir,
-            images_regex,
-            um_to_mosaic_file,
-            tile_size,
-            tile_overlap,
-            true
-        )
-    }
+    //
+    // MODULE: Run vpt prepare-segmentation
+    //
+    PREPARE_SEGMENTATION (
+        meta,
+        algorithm_json,
+        images_dir,
+        images_regex,
+        um_to_mosaic_file,
+        tile_size,
+        tile_overlap,
+        true
+    )
 
     // Create list sequence of 0..N tiles
     PREPARE_SEGMENTATION.out.segmentation_files
