@@ -120,7 +120,10 @@ workflow PIPELINE_INITIALISATION {
         ch_weights = Channel.fromPath(custom_weights, checkIfExists: true)
     }
 
-    // Validate integer parameters
+    // Validate parameters
+    if (params.input != null && params.input != '') {
+        error "The input parameter is not supported. Please use -params-file instead."
+    }
     if (!transcript_count_threshold.toString().isInteger() &&
         transcript_count_threshold > 0) {
         error "The transcript_count_threshold parameter is not a valid positive integer"
