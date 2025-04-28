@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/WEHI-SODA-Hub/spatialvpt/master/nextflow_schema.json",
     "title": "WEHI-SODA-Hub/spatialvpt pipeline parameters",
     "description": "Segmentation and QC workflow for MERSCOPE",
