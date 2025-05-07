@@ -1,17 +1,18 @@
-process DERIVE_ENTITY_METADATA {
+process VPT_COMPILETILESEGMENTATION {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    val(meta)
-    path(micron_space)
+    tuple val(meta), path(segmentation_spec), path(images), path(algorithm_json)
+    path(segmentation_tiles)
 
     output:
-    path("*.csv"), emit: entity_metadata
+    path("*_mosaic_space.parquet"), emit: mosaic_space
+    path("*_micron_space.parquet"), emit: micron_space
     path  "versions.yml"          , emit: versions
 
     when:
@@ -23,11 +24,15 @@ process DERIVE_ENTITY_METADATA {
     }
     def args = task.ext.args ?: ''
     """
+    mkdir result_tiles
+    for segment in ${segmentation_tiles}; do
+        cp -d \$segment result_tiles
+    done
+
     vpt --verbose \\
-        derive-entity-metadata \\
+        compile-tile-segmentation \\
         $args \\
-        --input-boundaries $micron_space \\
-        --output-metadata cell_metadata_resegmented.csv
+        --input-segmentation-parameters $segmentation_spec
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

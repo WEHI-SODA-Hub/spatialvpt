@@ -1,33 +1,44 @@
-process RUN_SEGMENTATION_ON_TILE {
+process VPT_PREPARESEGMENTATION {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
 
     input:
-    tuple val(meta), path(segmentation_spec), path(input_images), path(algorithm_json), val(tile_index)
-    path(custom_weights)
+    val(meta)
+    path(algorithm_json)
+    path(input_images)
+    val(images_regex)
+    path(um_to_mosaic_file)
+    val(tile_size)
+    val(tile_overlap)
+    val(channel_merge_ready)
 
     output:
-    tuple val(meta), path("result_tiles/*.parquet"), emit: segmented_tile
+    tuple val(meta), path("*.json"), path(input_images), path(algorithm_json), emit: segmentation_files
     path  "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
     """
     vpt --verbose \\
-        run-segmentation-on-tile \\
+        prepare-segmentation \\
         $args \\
-        --input-segmentation-parameters $segmentation_spec \\
-        --tile-index $tile_index
+        --segmentation-algorithm $algorithm_json \\
+        --input-images "${input_images}/${images_regex}" \\
+        --input-micron-to-mosaic $um_to_mosaic_file \\
+        --output-path . \\
+        --tile-size $tile_size \\
+        --tile-overlap $tile_overlap
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

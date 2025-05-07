@@ -1,6 +1,6 @@
-process PREPARE_SEGMENTATION {
+process VPT_UPDATEVZG {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_high'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
@@ -8,37 +8,33 @@ process PREPARE_SEGMENTATION {
 
     input:
     val(meta)
-    path(algorithm_json)
-    path(input_images)
-    val(images_regex)
-    path(um_to_mosaic_file)
-    val(tile_size)
-    val(tile_overlap)
-    val(channel_merge_ready)
+    path(input_vzg)
+    path(micron_space)
+    path(entity_by_gene)
+    path(metadata)
 
     output:
-    tuple val(meta), path("*.json"), path(input_images), path(algorithm_json), emit: segmentation_files
+    path("*.vzg"), emit: vzg_file
     path  "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
+    def vzg_name = input_vzg.getSimpleName()
     """
     vpt --verbose \\
-        prepare-segmentation \\
+        update-vzg \\
         $args \\
-        --segmentation-algorithm $algorithm_json \\
-        --input-images "${input_images}/${images_regex}" \\
-        --input-micron-to-mosaic $um_to_mosaic_file \\
-        --output-path . \\
-        --tile-size $tile_size \\
-        --tile-overlap $tile_overlap
+        --input-boundaries $micron_space \\
+        --input-entity-by-gene $entity_by_gene \\
+        --input-metadata $metadata \\
+        --input-vzg $input_vzg \\
+        --output-vzg ${vzg_name}_resegmented.vzg
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

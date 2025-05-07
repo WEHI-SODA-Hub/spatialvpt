@@ -1,6 +1,6 @@
-process UPDATE_VZG {
+process VPT_DERIVEENTITYMETADATA {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
@@ -8,13 +8,10 @@ process UPDATE_VZG {
 
     input:
     val(meta)
-    path(input_vzg)
     path(micron_space)
-    path(entity_by_gene)
-    path(metadata)
 
     output:
-    path("*.vzg"), emit: vzg_file
+    path("*.csv"), emit: entity_metadata
     path  "versions.yml"          , emit: versions
 
     when:
@@ -25,16 +22,12 @@ process UPDATE_VZG {
         error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
-    def vzg_name = input_vzg.getSimpleName()
     """
     vpt --verbose \\
-        update-vzg \\
+        derive-entity-metadata \\
         $args \\
         --input-boundaries $micron_space \\
-        --input-entity-by-gene $entity_by_gene \\
-        --input-metadata $metadata \\
-        --input-vzg $input_vzg \\
-        --output-vzg ${vzg_name}_resegmented.vzg
+        --output-metadata cell_metadata_resegmented.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

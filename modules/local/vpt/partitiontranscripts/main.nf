@@ -1,4 +1,4 @@
-process PARTITION_TRANSCRIPTS {
+process VPT_PARTITIONTRANSCRIPTS {
     tag "$meta.id"
     label 'process_high'
 
