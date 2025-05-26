@@ -3,7 +3,6 @@
 // Optionally update VZG file
 //
 
-include { paramsSummaryMap            } from 'plugin/nf-validation'
 include { VPT_PREPARESEGMENTATION     } from '../../modules/local/vpt/preparesegmentation/main'
 include { VPT_RUNSEGMENTATIONONTILE   } from '../../modules/local/vpt/runsegmentationontile/main'
 include { VPT_COMPILETILESEGMENTATION } from '../../modules/local/vpt/compiletilesegmentation/main'

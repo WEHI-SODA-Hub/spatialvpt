@@ -3,8 +3,8 @@ process VPT_RUNSEGMENTATIONONTILE {
     label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
-        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
 
     input:
     tuple val(meta), path(segmentation_spec), path(input_images), path(algorithm_json), val(tile_index)

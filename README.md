@@ -136,7 +136,7 @@ boundaries: "/path/to/segmentation.parquet"
 ```bash
 nextflow run WEHI-SODA-Hub/spatialvpt \
    -profile <docker/singularity/.../institute> \
-   --input params.yml \
+   -params-file params.yml \
    --outdir <OUTDIR>
 ```
 
