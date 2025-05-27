@@ -8,9 +8,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { UTILS_NFVALIDATION_PLUGIN } from '../../nf-core/utils_nfvalidation_plugin'
-include { paramsSummaryMap          } from 'plugin/nf-validation'
-include { fromSamplesheet           } from 'plugin/nf-validation'
+include { paramsHelp                } from 'plugin/nf-schema'
+include { paramsSummaryMap          } from 'plugin/nf-schema'
+include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
@@ -71,18 +71,27 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
-    // Validate parameters and generate parameter summary to stdout
+    // Print help text and exit if required
     //
     pre_help_text = nfCoreLogo(monochrome_logs)
     post_help_text = '\n' + workflowCitation() + '\n' + dashedLine(monochrome_logs)
-    def String workflow_command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
-    UTILS_NFVALIDATION_PLUGIN (
-        help,
-        workflow_command,
-        pre_help_text,
-        post_help_text,
+
+    if (params.help) {
+        def String workflow_command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> -params-file params.yml --outdir <OUTDIR>"
+
+        log.info pre_help_text + paramsHelp(workflow_command) + post_help_text
+        exit 0
+    } else {
+        log.info pre_help_text + post_help_text
+    }
+
+    //
+    // Validate parameters and generate parameter summary to stdout
+    //
+    UTILS_NFSCHEMA_PLUGIN (
+        workflow,
         validate_params,
-        "nextflow_schema.json"
+        "${projectDir}/nextflow_schema.json"
     )
 
     //
@@ -120,7 +129,10 @@ workflow PIPELINE_INITIALISATION {
         ch_weights = Channel.fromPath(custom_weights, checkIfExists: true)
     }
 
-    // Validate integer parameters
+    // Validate parameters
+    if (params.input != null && params.input != '') {
+        error "The input parameter is not supported. Please use -params-file instead."
+    }
     if (!transcript_count_threshold.toString().isInteger() &&
         transcript_count_threshold > 0) {
         error "The transcript_count_threshold parameter is not a valid positive integer"

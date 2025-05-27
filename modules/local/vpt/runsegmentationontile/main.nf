@@ -1,18 +1,17 @@
-process COMPILE_TILE_SEGMENTATION {
+process VPT_RUNSEGMENTATIONONTILE {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
-        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
 
     input:
-    tuple val(meta), path(segmentation_spec), path(images), path(algorithm_json)
-    path(segmentation_tiles)
+    tuple val(meta), path(segmentation_spec), path(input_images), path(algorithm_json), val(tile_index)
+    path(custom_weights)
 
     output:
-    path("*_mosaic_space.parquet"), emit: mosaic_space
-    path("*_micron_space.parquet"), emit: micron_space
+    tuple val(meta), path("result_tiles/*.parquet"), emit: segmented_tile
     path  "versions.yml"          , emit: versions
 
     when:
@@ -24,15 +23,11 @@ process COMPILE_TILE_SEGMENTATION {
     }
     def args = task.ext.args ?: ''
     """
-    mkdir result_tiles
-    for segment in ${segmentation_tiles}; do
-        cp -d \$segment result_tiles
-    done
-
     vpt --verbose \\
-        compile-tile-segmentation \\
+        run-segmentation-on-tile \\
         $args \\
-        --input-segmentation-parameters $segmentation_spec
+        --input-segmentation-parameters $segmentation_spec \\
+        --tile-index $tile_index
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

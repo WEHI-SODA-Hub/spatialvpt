@@ -1,10 +1,10 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/WEHI-SODA-Hub/spatialvpt/master/nextflow_schema.json",
     "title": "WEHI-SODA-Hub/spatialvpt pipeline parameters",
     "description": "Segmentation and QC workflow for MERSCOPE",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -88,7 +88,6 @@
                 "update_vzg": {
                     "type": "boolean",
                     "description": "Create updated VZG file after segmentation.",
-                    "default": true,
                     "fa_icon": "fas fa-sync"
                 },
                 "input_vzg": {
@@ -104,13 +103,11 @@
                 "tile_size": {
                     "type": "integer",
                     "description": "Tile size for splitting large images.",
-                    "default": 4096,
                     "fa_icon": "fas fa-th-large"
                 },
                 "tile_overlap": {
                     "type": "integer",
                     "description": "Overlap between tiles.",
-                    "default": 400,
                     "fa_icon": "fas fa-th-large"
                 }
             }
@@ -334,36 +331,13 @@
                 "validate_params": {
                     "type": "boolean",
                     "description": "Boolean whether to validate parameters against the schema at runtime",
-                    "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
-                },
-                "validationShowHiddenParams": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-eye-slash",
-                    "description": "Show all params when using `--help`",
-                    "hidden": true,
-                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "validationFailUnrecognisedParams": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
-                    "hidden": true,
-                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
-                },
-                "validationLenientMode": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Validation of parameters in lenient more.",
-                    "hidden": true,
-                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 },
                 "pipelines_testdata_base_path": {
                     "type": "string",
                     "fa_icon": "far fa-check-circle",
                     "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
                     "hidden": true
                 }
             }
@@ -371,22 +345,22 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/segmentation_options"
+            "$ref": "#/$defs/segmentation_options"
         },
         {
-            "$ref": "#/definitions/report_options"
+            "$ref": "#/$defs/report_options"
         },
         {
-            "$ref": "#/definitions/report_only_options"
+            "$ref": "#/$defs/report_only_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }

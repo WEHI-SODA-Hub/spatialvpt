@@ -1,20 +1,18 @@
-process UPDATE_VZG {
+process VPT_COMPILETILESEGMENTATION {
     tag "$meta.id"
     label 'process_high'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
-        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
 
     input:
-    val(meta)
-    path(input_vzg)
-    path(micron_space)
-    path(entity_by_gene)
-    path(metadata)
+    tuple val(meta), path(segmentation_spec), path(images), path(algorithm_json)
+    path(segmentation_tiles)
 
     output:
-    path("*.vzg"), emit: vzg_file
+    path("*_mosaic_space.parquet"), emit: mosaic_space
+    path("*_micron_space.parquet"), emit: micron_space
     path  "versions.yml"          , emit: versions
 
     when:
@@ -25,16 +23,16 @@ process UPDATE_VZG {
         error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
-    def vzg_name = input_vzg.getSimpleName()
     """
+    mkdir result_tiles
+    for segment in ${segmentation_tiles}; do
+        cp -d \$segment result_tiles
+    done
+
     vpt --verbose \\
-        update-vzg \\
+        compile-tile-segmentation \\
         $args \\
-        --input-boundaries $micron_space \\
-        --input-entity-by-gene $entity_by_gene \\
-        --input-metadata $metadata \\
-        --input-vzg $input_vzg \\
-        --output-vzg ${vzg_name}_resegmented.vzg
+        --input-segmentation-parameters $segmentation_spec
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

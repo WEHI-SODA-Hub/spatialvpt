@@ -1,17 +1,17 @@
-process RUN_SEGMENTATION_ON_TILE {
+process VPT_DERIVEENTITYMETADATA {
     tag "$meta.id"
     label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' :
-        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:main' }"
+        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' :
+        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
 
     input:
-    tuple val(meta), path(segmentation_spec), path(input_images), path(algorithm_json), val(tile_index)
-    path(custom_weights)
+    val(meta)
+    path(micron_space)
 
     output:
-    tuple val(meta), path("result_tiles/*.parquet"), emit: segmented_tile
+    path("*.csv"), emit: entity_metadata
     path  "versions.yml"          , emit: versions
 
     when:
@@ -24,10 +24,10 @@ process RUN_SEGMENTATION_ON_TILE {
     def args = task.ext.args ?: ''
     """
     vpt --verbose \\
-        run-segmentation-on-tile \\
+        derive-entity-metadata \\
         $args \\
-        --input-segmentation-parameters $segmentation_spec \\
-        --tile-index $tile_index
+        --input-boundaries $micron_space \\
+        --output-metadata cell_metadata_resegmented.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

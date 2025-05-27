@@ -19,7 +19,8 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
-nf_core_version: 3.0.2
+  modules_json: false
+nf_core_version: 3.2.0
 repository_type: pipeline
 template:
   prefix: WEHI-SODA-Hub
