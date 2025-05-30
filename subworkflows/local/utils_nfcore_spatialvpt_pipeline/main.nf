@@ -46,6 +46,7 @@ workflow PIPELINE_INITIALISATION {
     input_vzg         //  string: Path to VZG file for MERSCOPE visualisation
     tile_size         // integer: Pixels tile width and height
     tile_overlap      // integer: Overlap between adjacent tiles
+    z_index           // integer: Z index used to generate patch for report
     red_stain_name    //  string: Name for red channel in report
     green_stain_name  //  string: Name for green channel in report
     blue_stain_name   //  string: Name for blue channel in report
@@ -103,7 +104,7 @@ workflow PIPELINE_INITIALISATION {
 
     // Create channels from file inputs
     ch_alg_json  = Channel.fromPath(algorithm_json, checkIfExists: true)
-    ch_input_vzg = Channel.fromPath(input_vzg, checkIfExists: true)
+    ch_input_vzg = Channel.fromPath(input_vzg, checkIfExists: false)
     ch_images    = Channel.fromPath(images_dir, checkIfExists: true)
     ch_mosaic    = Channel.fromPath(um_to_mosaic_file, checkIfExists: true)
     ch_txs       = Channel.fromPath(detected_transcripts, checkIfExists: true)
@@ -164,6 +165,7 @@ workflow PIPELINE_INITIALISATION {
     input_vzg                  = ch_input_vzg
     tile_size                  = tile_size
     tile_overlap               = tile_overlap
+    z_index                    = z_index
     red_stain_name             = red_stain_name
     green_stain_name           = green_stain_name
     blue_stain_name            = blue_stain_name

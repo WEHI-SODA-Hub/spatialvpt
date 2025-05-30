@@ -118,6 +118,11 @@
             "fa_icon": "fas fa-cogs",
             "description": "Options for generating report.",
             "properties": {
+                "z_index": {
+                    "type": "integer",
+                    "description": "Z index used to generate patches for the report.",
+                    "fa_icon": "fas fa-layer-group"
+                },
                 "red_stain_name": {
                     "type": "string",
                     "description": "Stain name for red channel.",

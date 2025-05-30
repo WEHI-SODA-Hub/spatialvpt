@@ -14,6 +14,7 @@ process VPT_GENERATESEGMENTATIONMETRICS {
     path(images)
     path(boundaries)
     path(micron_to_mosaic)
+    val(z_index)
     val(red_stain_name)
     val(green_stain_name)
     val(blue_stain_name)
@@ -45,6 +46,7 @@ process VPT_GENERATESEGMENTATIONMETRICS {
         --input-images $images \\
         --input-boundaries $boundaries \\
         --input-micron-to-mosaic $micron_to_mosaic \\
+        --input-z-index $z_index \\
         ${red_stain_param} \\
         --green-stain-name ${green_stain_name} \\
         --blue-stain-name ${blue_stain_name} \\

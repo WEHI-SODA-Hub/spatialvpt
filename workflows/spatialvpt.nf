@@ -27,6 +27,7 @@ workflow SPATIALVPT {
     input_vzg
     tile_size
     tile_overlap
+    z_index
     red_stain_name
     green_stain_name
     blue_stain_name
@@ -54,6 +55,7 @@ workflow SPATIALVPT {
             images_dir,
             boundaries,
             um_to_mosaic_file,
+            z_index,
             red_stain_name,
             green_stain_name,
             blue_stain_name,
@@ -99,6 +101,7 @@ workflow SPATIALVPT {
             ch_images,
             ch_boundaries,
             ch_mosaic,
+            z_index,
             red_stain_name,
             green_stain_name,
             blue_stain_name,
