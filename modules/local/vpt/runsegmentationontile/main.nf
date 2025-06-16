@@ -11,7 +11,7 @@ process VPT_RUNSEGMENTATIONONTILE {
     path(custom_weights)
 
     output:
-    tuple val(meta), path("result_tiles/*.parquet"), emit: segmented_tile
+    tuple val(meta), path("*/result_tiles/*.parquet"), emit: segmented_tile
     path  "versions.yml"          , emit: versions
 
     when:
@@ -33,6 +33,6 @@ process VPT_RUNSEGMENTATIONONTILE {
     "${task.process}":
         vpt: \$( pip show vpt | grep Version | sed -e "s/Version: //g" )
         vpt-plugin-cellpose2: \$( pip show vpt-plugin-cellpose2 | grep Version | sed -e "s/Version: //g" )
-    END_VERSION
+    END_VERSIONS
     """
 }

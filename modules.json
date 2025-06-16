@@ -3,6 +3,15 @@
     "homePage": "https://github.com/WEHI-SODA-Hub/spatialvpt",
     "repos": {
         "https://github.com/nf-core/modules.git": {
+            "modules": {
+                "nf-core": {
+                    "vizgenpostprocessing/preparesegmentation": {
+                        "branch": "master",
+                        "git_sha": "e08e94bac5b1f6471e5bcaa135f8a18ca0481a4b",
+                        "installed_by": ["modules"]
+                    }
+                }
+            },
             "subworkflows": {
                 "nf-core": {
                     "utils_nextflow_pipeline": {

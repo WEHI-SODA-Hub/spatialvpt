@@ -11,8 +11,8 @@ process VPT_COMPILETILESEGMENTATION {
     path(segmentation_tiles)
 
     output:
-    path("*_mosaic_space.parquet"), emit: mosaic_space
-    path("*_micron_space.parquet"), emit: micron_space
+    path("${prefix}/*_mosaic_space.parquet"), emit: mosaic_space
+    path("${prefix}/*_micron_space.parquet"), emit: micron_space
     path  "versions.yml"          , emit: versions
 
     when:
@@ -23,10 +23,11 @@ process VPT_COMPILETILESEGMENTATION {
         error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
+    prefix   = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir result_tiles
+    mkdir -p ${prefix}/result_tiles
     for segment in ${segmentation_tiles}; do
-        cp -d \$segment result_tiles
+        cp -d \$segment ${prefix}/result_tiles
     done
 
     vpt --verbose \\
@@ -38,6 +39,6 @@ process VPT_COMPILETILESEGMENTATION {
     "${task.process}":
         vpt: \$( pip show vpt | grep Version | sed -e "s/Version: //g" )
         vpt-plugin-cellpose2: \$( pip show vpt-plugin-cellpose2 | grep Version | sed -e "s/Version: //g" )
-    END_VERSION
+    END_VERSIONS
     """
 }

@@ -3,14 +3,14 @@
 // Optionally update VZG file
 //
 
-include { VPT_PREPARESEGMENTATION     } from '../../modules/local/vpt/preparesegmentation/main'
-include { VPT_RUNSEGMENTATIONONTILE   } from '../../modules/local/vpt/runsegmentationontile/main'
-include { VPT_COMPILETILESEGMENTATION } from '../../modules/local/vpt/compiletilesegmentation/main'
-include { VPT_PARTITIONTRANSCRIPTS    } from '../../modules/local/vpt/partitiontranscripts/main'
-include { VPT_DERIVEENTITYMETADATA    } from '../../modules/local/vpt/deriveentitymetadata/main'
-include { VPT_UPDATEVZG               } from '../../modules/local/vpt/updatevzg/main'
-include { softwareVersionsToYAML      } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText      } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
+include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION } from '../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
+include { VPT_RUNSEGMENTATIONONTILE                } from '../../modules/local/vpt/runsegmentationontile/main'
+include { VPT_COMPILETILESEGMENTATION              } from '../../modules/local/vpt/compiletilesegmentation/main'
+include { VPT_PARTITIONTRANSCRIPTS                 } from '../../modules/local/vpt/partitiontranscripts/main'
+include { VPT_DERIVEENTITYMETADATA                 } from '../../modules/local/vpt/deriveentitymetadata/main'
+include { VPT_UPDATEVZG                            } from '../../modules/local/vpt/updatevzg/main'
+include { softwareVersionsToYAML                   } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                   } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 
 workflow VPTSEGMENTATION {
 
@@ -38,28 +38,34 @@ workflow VPTSEGMENTATION {
     //
     // MODULE: Run vpt prepare-segmentation
     //
-    VPT_PREPARESEGMENTATION (
-        meta,
+    VIZGENPOSTPROCESSING_PREPARESEGMENTATION (
+        meta.combine(images_dir)
+            .combine(um_to_mosaic_file)
+            .map { meta_val, images, um_file ->
+                tuple(meta_val, images, um_file)
+        },
         algorithm_json,
-        images_dir,
-        images_regex,
-        um_to_mosaic_file,
-        tile_size,
-        tile_overlap,
-        true
+        images_regex
     )
 
     // Create list sequence of 0..N tiles
-    VPT_PREPARESEGMENTATION.out.segmentation_files
-        .map { meta, seg_json, images, alg_alg -> seg_json }
+    VIZGENPOSTPROCESSING_PREPARESEGMENTATION.out.segmentation_files
+        .map { meta, seg_json -> seg_json }
         .splitJson(path: 'window_grid' )
         .filter { it.key == 'num_tiles' }
         .map { it.value as Integer }
         .flatMap { num -> (0..num-1).toList() }
         .set{ ch_tiles }
 
-    // Combine specification json files with tile ID
-    VPT_PREPARESEGMENTATION.out.segmentation_files
+
+    // Create channel containing required segmentation files
+    VIZGENPOSTPROCESSING_PREPARESEGMENTATION.out.segmentation_files
+        .combine(ch_images)
+        .combine(algorithm_json)
+        .set{ ch_segmentation_files }
+
+    // Add tile infomration for running segmentation on tile
+    ch_segmentation_files
         .combine(ch_tiles)
         .set{ ch_tile_segments }
 
@@ -78,11 +84,12 @@ workflow VPTSEGMENTATION {
         .collect()
         .set{ ch_segmented_tiles }
 
+
     //
     // MODULE: Run vpt compile-tile-segmentation
     //
     VPT_COMPILETILESEGMENTATION(
-        VPT_PREPARESEGMENTATION.out.segmentation_files,
+        ch_segmentation_files,
         ch_segmented_tiles
     )
 
