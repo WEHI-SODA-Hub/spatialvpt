@@ -3,14 +3,14 @@
 // Optionally update VZG file
 //
 
-include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION   } from '../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
-include { VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE } from '../../modules/nf-core/vizgenpostprocessing/runsegmentationontile/main'
-include { VPT_COMPILETILESEGMENTATION                } from '../../modules/local/vpt/compiletilesegmentation/main'
-include { VPT_PARTITIONTRANSCRIPTS                   } from '../../modules/local/vpt/partitiontranscripts/main'
-include { VPT_DERIVEENTITYMETADATA                   } from '../../modules/local/vpt/deriveentitymetadata/main'
-include { VPT_UPDATEVZG                              } from '../../modules/local/vpt/updatevzg/main'
-include { softwareVersionsToYAML                     } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                     } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
+include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION     } from '../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
+include { VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE   } from '../../modules/nf-core/vizgenpostprocessing/runsegmentationontile/main'
+include { VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION } from '../../modules/local/vizgenpostprocessing/compiletilesegmentation/main'
+include { VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS    } from '../../modules/local/vizgenpostprocessing/partitiontranscripts/main'
+include { VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA    } from '../../modules/local/vizgenpostprocessing/deriveentitymetadata/main'
+include { VIZGENPOSTPROCESSING_UPDATEVZG               } from '../../modules/local/vizgenpostprocessing/updatevzg/main'
+include { softwareVersionsToYAML                       } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                       } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 
 workflow VPTSEGMENTATION {
 
@@ -94,7 +94,7 @@ workflow VPTSEGMENTATION {
     //
     // MODULE: Run vpt compile-tile-segmentation
     //
-    VPT_COMPILETILESEGMENTATION(
+    VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION(
         ch_segmentation_files,
         algorithm_json,
         ch_segmented_tiles
@@ -103,36 +103,36 @@ workflow VPTSEGMENTATION {
     //
     // MODULE: Run vpt derive-entity-metadata
     //
-    VPT_DERIVEENTITYMETADATA(
+    VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA(
         meta,
-        VPT_COMPILETILESEGMENTATION.out.micron_space
+        VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION.out.micron_space
     )
 
     //
     // MODULE: Run vpt partition-transcripts
     //
-    VPT_PARTITIONTRANSCRIPTS(
+    VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS(
         meta,
-        VPT_COMPILETILESEGMENTATION.out.micron_space,
+        VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION.out.micron_space,
         detected_txs
     )
 
     // Output channels
     ch_segmentation_output =
-        VPT_COMPILETILESEGMENTATION.out.micron_space
+        VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION.out.micron_space
 
     ch_entity_metadata =
-        VPT_DERIVEENTITYMETADATA.out.entity_metadata
+        VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA.out.entity_metadata
 
     ch_entity_by_gene =
-        VPT_PARTITIONTRANSCRIPTS.out.transcripts
+        VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS.out.transcripts
 
     ch_vzg = Channel.empty()
     if (update_vzg.value) {
         //
         // MODULE: Run vpt update-vzg
         //
-        VPT_UPDATEVZG(
+        VIZGENPOSTPROCESSING_UPDATEVZG(
             meta,
             input_vzg,
             ch_segmentation_output,
@@ -140,7 +140,7 @@ workflow VPTSEGMENTATION {
             ch_entity_metadata
         )
 
-        ch_vzg = VPT_UPDATEVZG.out.vzg_file
+        ch_vzg = VIZGENPOSTPROCESSING_UPDATEVZG.out.vzg_file
     }
 
     // get transcripts channel for downstream output

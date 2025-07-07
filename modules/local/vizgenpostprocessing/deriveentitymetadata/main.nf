@@ -1,6 +1,6 @@
-process VPT_PARTITIONTRANSCRIPTS {
+process VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' :
@@ -9,10 +9,9 @@ process VPT_PARTITIONTRANSCRIPTS {
     input:
     val(meta)
     path(micron_space)
-    path(input_transcripts)
 
     output:
-    path("*.csv"), emit: transcripts
+    path("*.csv"), emit: entity_metadata
     path  "versions.yml"          , emit: versions
 
     when:
@@ -20,17 +19,15 @@ process VPT_PARTITIONTRANSCRIPTS {
 
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
+        error "VIZGENPOSTPROCESSING is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
     """
     vpt --verbose \\
-        partition-transcripts \\
+        derive-entity-metadata \\
         $args \\
         --input-boundaries $micron_space \\
-        --input-transcripts $input_transcripts \\
-        --output-entity-by-gene cell_by_gene_repartitioned.csv \\
-        --output-transcripts cell_by_gene_repartitioned.csv
+        --output-metadata cell_metadata_resegmented.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

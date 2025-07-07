@@ -1,4 +1,4 @@
-process VPT_COMPILETILESEGMENTATION {
+process VIZGENPOSTPROCESSING_UPDATEVZG {
     tag "$meta.id"
     label 'process_high'
 
@@ -7,13 +7,14 @@ process VPT_COMPILETILESEGMENTATION {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
 
     input:
-    tuple val(meta), path(images), path(segmentation_spec)
-    path(algorithm_json)
-    path(segmentation_tiles)
+    val(meta)
+    path(input_vzg)
+    path(micron_space)
+    path(entity_by_gene)
+    path(metadata)
 
     output:
-    path("${prefix}/*_mosaic_space.parquet"), emit: mosaic_space
-    path("${prefix}/*_micron_space.parquet"), emit: micron_space
+    path("*.vzg"), emit: vzg_file
     path  "versions.yml"          , emit: versions
 
     when:
@@ -21,20 +22,19 @@ process VPT_COMPILETILESEGMENTATION {
 
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
+        error "VIZGENPOSTPROCESSING is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
-    prefix   = task.ext.prefix ?: "${meta.id}"
+    def vzg_name = input_vzg.getSimpleName()
     """
-    mkdir -p ${prefix}/result_tiles
-    for segment in ${segmentation_tiles}; do
-        cp -d \$segment ${prefix}/result_tiles
-    done
-
     vpt --verbose \\
-        compile-tile-segmentation \\
+        update-vzg \\
         $args \\
-        --input-segmentation-parameters $segmentation_spec
+        --input-boundaries $micron_space \\
+        --input-entity-by-gene $entity_by_gene \\
+        --input-metadata $metadata \\
+        --input-vzg $input_vzg \\
+        --output-vzg ${vzg_name}_resegmented.vzg
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

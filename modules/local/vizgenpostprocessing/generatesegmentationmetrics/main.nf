@@ -1,4 +1,4 @@
-process VPT_GENERATESEGMENTATIONMETRICS {
+process VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS {
     tag "$meta.id"
     label 'process_medium'
 
@@ -31,7 +31,7 @@ process VPT_GENERATESEGMENTATIONMETRICS {
 
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "VPT is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
+        error "VIZGENPOSTPROCESSING is unavailable via Conda. Please use Docker / Singularity / Apptainer / Podman instead."
     }
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

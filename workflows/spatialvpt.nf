@@ -4,8 +4,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { VPTSEGMENTATION                 } from '../subworkflows/local/vptsegmentation'
-include { VPT_GENERATESEGMENTATIONMETRICS } from '../modules/local/vpt/generatesegmentationmetrics/generatesegmentationmetrics'
+include { VPTSEGMENTATION                                  } from '../subworkflows/local/vptsegmentation'
+include { VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS } from '../modules/local/vizgenpostprocessing/generatesegmentationmetrics/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +47,7 @@ workflow SPATIALVPT {
         //
         // MODULE: vpt generate-segmentation-metrics
         //
-        VPT_GENERATESEGMENTATIONMETRICS(
+        VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS(
             meta,
             entity_by_gene,
             metadata,
@@ -63,7 +63,7 @@ workflow SPATIALVPT {
             volume_filter_threshold
         )
 
-        ch_versions = VPT_GENERATESEGMENTATIONMETRICS.out.versions
+        ch_versions = VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions
     } else {
         //
         // SUBWORKFLOW: Run segmentation workflow with vpt
@@ -93,7 +93,7 @@ workflow SPATIALVPT {
         //
         // MODULE: vpt generate-segmentation-metrics
         //
-        VPT_GENERATESEGMENTATIONMETRICS(
+        VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS(
             meta,
             ch_entity_by_gene,
             ch_metadata,
@@ -110,12 +110,12 @@ workflow SPATIALVPT {
         )
 
         VPTSEGMENTATION.out.versions
-            .combine(VPT_GENERATESEGMENTATIONMETRICS.out.versions)
+            .combine(VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions)
             .set{ ch_versions }
     }
 
     emit:
-    report         = VPT_GENERATESEGMENTATIONMETRICS.out.report
+    report         = VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.report
     versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 
