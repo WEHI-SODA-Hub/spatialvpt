@@ -3,14 +3,14 @@
 // Optionally update VZG file
 //
 
-include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION } from '../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
-include { VPT_RUNSEGMENTATIONONTILE                } from '../../modules/local/vpt/runsegmentationontile/main'
-include { VPT_COMPILETILESEGMENTATION              } from '../../modules/local/vpt/compiletilesegmentation/main'
-include { VPT_PARTITIONTRANSCRIPTS                 } from '../../modules/local/vpt/partitiontranscripts/main'
-include { VPT_DERIVEENTITYMETADATA                 } from '../../modules/local/vpt/deriveentitymetadata/main'
-include { VPT_UPDATEVZG                            } from '../../modules/local/vpt/updatevzg/main'
-include { softwareVersionsToYAML                   } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                   } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
+include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION   } from '../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
+include { VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE } from '../../modules/nf-core/vizgenpostprocessing/runsegmentationontile/main'
+include { VPT_COMPILETILESEGMENTATION                } from '../../modules/local/vpt/compiletilesegmentation/main'
+include { VPT_PARTITIONTRANSCRIPTS                   } from '../../modules/local/vpt/partitiontranscripts/main'
+include { VPT_DERIVEENTITYMETADATA                   } from '../../modules/local/vpt/deriveentitymetadata/main'
+include { VPT_UPDATEVZG                              } from '../../modules/local/vpt/updatevzg/main'
+include { softwareVersionsToYAML                     } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                     } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 
 workflow VPTSEGMENTATION {
 
@@ -61,10 +61,15 @@ workflow VPTSEGMENTATION {
     // Create channel containing required segmentation files
     VIZGENPOSTPROCESSING_PREPARESEGMENTATION.out.segmentation_files
         .combine(ch_images)
-        .combine(algorithm_json)
-        .set{ ch_segmentation_files }
+        .map { meta, seg_params, input_images ->
+            tuple(
+                meta,
+                input_images,
+                seg_params,
+            )
+        }.set{ ch_segmentation_files }
 
-    // Add tile infomration for running segmentation on tile
+    // Add tile infomration for running segmentation on tile and reorder channel
     ch_segmentation_files
         .combine(ch_tiles)
         .set{ ch_tile_segments }
@@ -72,24 +77,26 @@ workflow VPTSEGMENTATION {
     //
     // MODULE: Run vpt run-segmentation-on-tile
     //
-    VPT_RUNSEGMENTATIONONTILE(
+    VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE(
         ch_tile_segments,
+        algorithm_json.first(),
         custom_weights.first()
     )
 
     /// collect segmented tiles
-    VPT_RUNSEGMENTATIONONTILE.out.segmented_tile
+    VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE.out.segmented_tile
         .map { meta, seg_tile -> seg_tile }
         .flatten()
         .collect()
         .set{ ch_segmented_tiles }
 
-
+    ch_segmented_tiles.view()
     //
     // MODULE: Run vpt compile-tile-segmentation
     //
     VPT_COMPILETILESEGMENTATION(
         ch_segmentation_files,
+        algorithm_json,
         ch_segmented_tiles
     )
 

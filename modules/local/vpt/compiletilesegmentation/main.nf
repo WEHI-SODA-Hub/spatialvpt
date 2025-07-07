@@ -7,7 +7,8 @@ process VPT_COMPILETILESEGMENTATION {
         'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
 
     input:
-    tuple val(meta), path(segmentation_spec), path(images), path(algorithm_json)
+    tuple val(meta), path(images), path(segmentation_spec)
+    path(algorithm_json)
     path(segmentation_tiles)
 
     output:
