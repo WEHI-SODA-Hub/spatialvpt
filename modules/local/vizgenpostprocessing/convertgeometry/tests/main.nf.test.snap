@@ -7,18 +7,18 @@
                         {
                             "id": "test_sample"
                         },
-                        "test_sample.parquet:md5,1a1f12ebf93c065fe00e1553ac102774"
+                        "test_sample.parquet:md5,9396c92e0a0b584ac7c4e7c7693e50e8"
                     ]
                 ],
                 "1": [
                     "versions.yml:md5,4ae16511545413e77168c557a19306a8"
                 ],
-                "segmented_tile": [
+                "segmentation": [
                     [
                         {
                             "id": "test_sample"
                         },
-                        "test_sample.parquet:md5,1a1f12ebf93c065fe00e1553ac102774"
+                        "test_sample.parquet:md5,9396c92e0a0b584ac7c4e7c7693e50e8"
                     ]
                 ],
                 "versions": [
@@ -30,7 +30,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-07-08T14:08:54.362184073"
+        "timestamp": "2025-07-08T16:36:56.684331006"
     },
     "vizgen - boundary_dir - stub": {
         "content": [
@@ -46,7 +46,7 @@
                 "1": [
                     "versions.yml:md5,4ae16511545413e77168c557a19306a8"
                 ],
-                "segmented_tile": [
+                "segmentation": [
                     [
                         {
                             "id": "test_sample"
@@ -63,6 +63,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-07-08T14:09:21.741994043"
+        "timestamp": "2025-07-08T16:34:34.093052973"
     }
 }

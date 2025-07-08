@@ -74,15 +74,22 @@ workflow SPATIALVPT {
 
         ch_versions = VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions
     } else if (convert_geometry.value) {
+        // Create channel for conversion
+        meta.combine(boundary_dir)
+            .combine(boundary_regex)
+            .set{ ch_convert }
+
         //
         // MODULE: vpt convert-geometry
         //
         VIZGENPOSTPROCESSING_CONVERTGEOMETRY(
-            [ meta, boundary_dir, boundary_regex ]
+            ch_convert
         )
 
+        // Need to remove meta for downstream processing
         VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.segmentation
-            .set{ ch_segmentation }
+            .map { meta, parquet -> parquet
+            }.set{ ch_segmentation }
 
         ch_versions = VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.versions
     } else {
