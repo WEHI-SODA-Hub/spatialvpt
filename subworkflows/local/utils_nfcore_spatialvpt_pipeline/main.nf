@@ -55,7 +55,10 @@ workflow PIPELINE_INITIALISATION {
     report_only       // boolean: Whether to run vpt generate-segmentation-metrics only on already segmented data
     metadata          //  string: Path to metadata file (optional, only required for report_only mode)
     entity_by_gene    //  string: Path to entity_by_gene file (optional, only required for report_only mode)
-    boundaries        //  string: Path to parquet boundaries file (optional, onle required for report_only mode)
+    boundaries        //  string: Path to parquet boundaries file (optional, only required for report_only mode)
+    convert_geometry  // boolean: Whether to convert geometries instead of running vpt's segmentation
+    boundary_dir      //  string: Directory containing boundary files (optional, only required for convert_geometry mode)
+    boundary_regex    //  string: Regex for boundary files (optional, only required for convert_geometry mode)
 
     main:
 
@@ -123,6 +126,13 @@ workflow PIPELINE_INITIALISATION {
         ch_bound    = Channel.fromPath(boundaries, checkIfExists: true)
     }
 
+    // This channel is only required if running in convert_geometry mode
+    ch_boundaries = Channel.empty()
+
+    if (convert_geometry.value) {
+        ch_boundaries = Channel.fromPath(boundary_dir, checkIfExists: true)
+    }
+
     // Use blank file definition for custom weights unless custom_weights
     // is defined in config, in which case construct a path channel
     ch_weights = Channel.fromPath('.')
@@ -175,6 +185,9 @@ workflow PIPELINE_INITIALISATION {
     metadata                   = ch_metadata
     entity_by_gene             = ch_ebgene
     boundaries                 = ch_bound
+    convert_geometry           = convert_geometry
+    boundary_dir               = ch_boundaries
+    boundary_regex             = boundary_regex
     versions                   = ch_versions
 }
 

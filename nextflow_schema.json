@@ -112,6 +112,30 @@
                 }
             }
         },
+        "convert_geometry_options": {
+            "title": "Convert geometry options",
+            "type": "object",
+            "fa_icon": "fas fa-cogs",
+            "description": "Options for converting geometry files.",
+            "properties": {
+                "convert_geometry": {
+                    "type": "boolean",
+                    "description": "Enable to convert existing segmentations instead of running vpt's segmentation.",
+                    "fa_icon": "fas fa-exchange-alt"
+                },
+                "boundary_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Directory containing boundary files.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "boundary_regex": {
+                    "type": "string",
+                    "description": "Regex pattern for selecting boundary files. Supports geojson and hdf5 formats.",
+                    "fa_icon": "fas fa-file"
+                }
+            }
+        },
         "report_options": {
             "title": "Report options",
             "type": "object",
@@ -354,6 +378,9 @@
         },
         {
             "$ref": "#/$defs/segmentation_options"
+        },
+        {
+            "$ref": "#/$defs/convert_geometry_options"
         },
         {
             "$ref": "#/$defs/report_options"

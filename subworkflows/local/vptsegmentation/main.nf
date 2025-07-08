@@ -49,7 +49,6 @@ workflow VPTSEGMENTATION {
         .flatMap { num -> (0..num-1).toList() }
         .set{ ch_tiles }
 
-
     // Create channel containing required segmentation files
     VIZGENPOSTPROCESSING_PREPARESEGMENTATION.out.segmentation_files
         .combine(ch_images)
@@ -61,7 +60,7 @@ workflow VPTSEGMENTATION {
             )
         }.set{ ch_segmentation_files }
 
-    // Add tile infomration for running segmentation on tile and reorder channel
+    // Add tile information for running segmentation on tile and reorder channel
     ch_segmentation_files
         .combine(ch_tiles)
         .set{ ch_tile_segments }

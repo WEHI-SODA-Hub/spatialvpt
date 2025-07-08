@@ -35,7 +35,7 @@ input:
         description: |
           Regular expression to match the boundary files in the directory.
           Supports only geojson or hdf5 files.
-        pattern: "*.(geojson|hdf5)"
+        pattern: "*.(geojson|hdf5|h5)"
 
 output:
   segmented_tile:

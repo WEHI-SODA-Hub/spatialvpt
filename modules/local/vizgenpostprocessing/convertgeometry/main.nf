@@ -9,7 +9,7 @@ process VIZGENPOSTPROCESSING_CONVERTGEOMETRY {
     tuple val(meta), path(boundary_dir), val(boundary_regex)
 
     output:
-    tuple val(meta), path("*.parquet"), emit: segmented_tile
+    tuple val(meta), path("*.parquet"), emit: segmentation
     path  "versions.yml"              , emit: versions
 
     when:

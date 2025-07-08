@@ -59,7 +59,10 @@ workflow {
         params.report_only,
         params.metadata,
         params.entity_by_gene,
-        params.boundaries
+        params.boundaries,
+        params.convert_geometry,
+        params.boundary_dir,
+        params.boundary_regex
     )
 
     //
@@ -86,7 +89,10 @@ workflow {
         PIPELINE_INITIALISATION.out.report_only,
         PIPELINE_INITIALISATION.out.metadata,
         PIPELINE_INITIALISATION.out.entity_by_gene,
-        PIPELINE_INITIALISATION.out.boundaries
+        PIPELINE_INITIALISATION.out.boundaries,
+        PIPELINE_INITIALISATION.out.convert_geometry,
+        PIPELINE_INITIALISATION.out.boundary_dir,
+        PIPELINE_INITIALISATION.out.boundary_regex
     )
 
     //
