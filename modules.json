@@ -7,12 +7,12 @@
                 "nf-core": {
                     "vizgenpostprocessing/preparesegmentation": {
                         "branch": "master",
-                        "git_sha": "2b779c90cebe23873d7a729cff2049622fa6050c",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "vizgenpostprocessing/runsegmentationontile": {
                         "branch": "master",
-                        "git_sha": "2b779c90cebe23873d7a729cff2049622fa6050c",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     }
                 }
