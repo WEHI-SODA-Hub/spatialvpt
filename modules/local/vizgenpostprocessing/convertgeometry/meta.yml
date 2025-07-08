@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "vizgenpostprocessing_convertgeometry"
+description: |
+  The module converts entity boundaries into a format compatible with Vizgen's
+  post-processing tool.
+keywords:
+  - vpt
+  - vizgen
+  - segmentation
+  - microscopy
+  - spatial transcriptomics
+tools:
+  - "vizgenpostprocessing":
+      description: "Vizgen's post-processing tool"
+      homepage: "https://github.com/Vizgen/vizgen-postprocessing"
+      documentation: "https://vizgen.github.io/vizgen-postprocessing"
+      tool_dev_url: "https://github.com/Vizgen/vizgen-postprocessing"
+      licence: ["Apache-2.0"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'sample1', single_end:false ]
+    - boundary_dir:
+        type: directory
+        description: |
+          Path to the input directory containing boundary files.
+        ontologies:
+          - edam: "http://edamontology.org/data_1049"
+    - boundary_regex:
+        type: string
+        description: |
+          Regular expression to match the boundary files in the directory.
+          Supports only geojson or hdf5 files.
+        pattern: "*.(geojson|hdf5)"
+
+output:
+  segmented_tile:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - ${prefix}/result_tiles/*.parquet:
+          type: file
+          description: |
+            Parquet file containing the converted boundaries.
+          ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@mcmero"
+maintainers:
+  - "@mcmero"

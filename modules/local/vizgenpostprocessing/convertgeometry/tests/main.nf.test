@@ -1,0 +1,62 @@
+nextflow_process {
+
+    name "Test Process VIZGENPOSTPROCESSING_CONVERTGEOMETRY"
+    script "../main.nf"
+    process "VIZGENPOSTPROCESSING_CONVERTGEOMETRY"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "vizgenpostprocessing"
+    tag "vizgenpostprocessing/convertgeometry"
+
+    test("vizgen - boundary_dir") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample' ], // meta map
+                    file("${projectDir}/tests/data", checkIfExists: true), // boundary_dir
+                    '*.geojson' // boundary_regex
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() },
+                { assert process.out.versions }
+            )
+        }
+
+    }
+
+    test("vizgen - boundary_dir - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sample' ], // meta map
+                    file("${projectDir}/tests/data", checkIfExists: true), // boundary_dir
+                    '*.geojson' // boundary_regex
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() },
+                { assert process.out.versions }
+            )
+        }
+
+    }
+
+}
