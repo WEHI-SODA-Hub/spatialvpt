@@ -3,14 +3,11 @@
 // Optionally update VZG file
 //
 
-include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION     } from '../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
-include { VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE   } from '../../modules/nf-core/vizgenpostprocessing/runsegmentationontile/main'
-include { VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION } from '../../modules/local/vizgenpostprocessing/compiletilesegmentation/main'
-include { VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS    } from '../../modules/local/vizgenpostprocessing/partitiontranscripts/main'
-include { VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA    } from '../../modules/local/vizgenpostprocessing/deriveentitymetadata/main'
-include { VIZGENPOSTPROCESSING_UPDATEVZG               } from '../../modules/local/vizgenpostprocessing/updatevzg/main'
-include { softwareVersionsToYAML                       } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                       } from '../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
+include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION     } from '../../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
+include { VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE   } from '../../../modules/nf-core/vizgenpostprocessing/runsegmentationontile/main'
+include { VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION } from '../../../modules/local/vizgenpostprocessing/compiletilesegmentation/main'
+include { softwareVersionsToYAML                       } from '../../../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                       } from '../../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 
 workflow VPTSEGMENTATION {
 
@@ -20,12 +17,7 @@ workflow VPTSEGMENTATION {
     images_dir
     images_regex
     um_to_mosaic_file
-    detected_txs
     custom_weights
-    update_vzg
-    input_vzg
-    tile_size
-    tile_overlap
 
     main:
 
@@ -90,7 +82,6 @@ workflow VPTSEGMENTATION {
         .collect()
         .set{ ch_segmented_tiles }
 
-    ch_segmented_tiles.view()
     //
     // MODULE: Run vpt compile-tile-segmentation
     //
@@ -100,56 +91,9 @@ workflow VPTSEGMENTATION {
         ch_segmented_tiles
     )
 
-    //
-    // MODULE: Run vpt derive-entity-metadata
-    //
-    VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA(
-        meta,
-        VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION.out.micron_space
-    )
-
-    //
-    // MODULE: Run vpt partition-transcripts
-    //
-    VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS(
-        meta,
-        VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION.out.micron_space,
-        detected_txs
-    )
-
-    // Output channels
+    // Output channel for segmentation (micron space segmentations)
     ch_segmentation_output =
         VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION.out.micron_space
-
-    ch_entity_metadata =
-        VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA.out.entity_metadata
-
-    ch_entity_by_gene =
-        VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS.out.transcripts
-
-    ch_vzg = Channel.empty()
-    if (update_vzg.value) {
-        //
-        // MODULE: Run vpt update-vzg
-        //
-        VIZGENPOSTPROCESSING_UPDATEVZG(
-            meta,
-            input_vzg,
-            ch_segmentation_output,
-            ch_entity_by_gene,
-            ch_entity_metadata
-        )
-
-        ch_vzg = VIZGENPOSTPROCESSING_UPDATEVZG.out.vzg_file
-    }
-
-    // get transcripts channel for downstream output
-    meta.concat(detected_txs)
-        .set{ ch_transcripts }
-
-    // get micron_to_mosaic channel for downstream output
-    meta.concat(um_to_mosaic_file)
-        .set{ ch_mosaic }
 
     //
     // Collate and save software versions
@@ -163,13 +107,7 @@ workflow VPTSEGMENTATION {
         ).set { ch_collated_versions }
 
     emit:
-    entity_by_gene = ch_entity_by_gene
-    metadata       = ch_entity_metadata
-    transcripts    = ch_transcripts
-    images         = ch_images
     segmentation   = ch_segmentation_output
-    mosaic         = ch_mosaic
-    vzg            = ch_vzg
 
     versions       = ch_collated_versions // channel: [ path(versions.yml) ]
 }

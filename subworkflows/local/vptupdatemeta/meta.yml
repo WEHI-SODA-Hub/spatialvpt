@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "vptupdatemeta"
+description: Vizgen post-processing subworkflow for updating metadata, partitioning transcripts, and optionally updating VZG files
+keywords:
+  - vizgen
+  - merscope
+  - spatial transcriptomics
+  - post-processing
+  - transcripts
+  - metadata
+  - vzg
+components:
+  - vizgenpostprocessing/deriveentitymetadata
+  - vizgenpostprocessing/partitiontranscripts
+  - vizgenpostprocessing/updatevzg
+input:
+  - meta:
+      type: map
+      description: |
+        Sample metadata map containing sample information
+        Structure: [ val(meta) ]
+  - micron_space:
+      type: file
+      description: |
+        Micron space file for spatial coordinate processing
+        Structure: [ path(micron_space) ]
+  - detected_txs:
+      type: file
+      description: |
+        Detected transcripts file
+        Structure: [ path(detected_txs) ]
+  - update_vzg:
+      type: val
+      description: |
+        Boolean flag to determine whether to update VZG file
+        Structure: [ val(update_vzg) ]
+  - input_vzg:
+      type: file
+      description: |
+        Input VZG file to be updated (required if update_vzg is true)
+        Structure: [ path(input_vzg) ]
+output:
+  - metadata:
+      type: file
+      description: |
+        Channel containing derived entity metadata
+        Structure: [ val(meta), path(entity_metadata) ]
+  - transcripts:
+      type: file
+      description: |
+        Channel containing partitioned transcripts
+        Structure: [ val(meta), path(detected_txs) ]
+  - vzg:
+      type: file
+      description: |
+        Channel containing updated VZG file (empty channel if update_vzg is false)
+        Structure: [ val(meta), path(vzg_file) ]
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@mcmero"
+maintainers:
+  - "@mcmero"

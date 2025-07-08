@@ -4,7 +4,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { VPTSEGMENTATION                                  } from '../subworkflows/local/vptsegmentation'
+include { VPTSEGMENTATION                                  } from '../subworkflows/local/vptsegmentation/main'
+include { VPTUPDATEMETA                                    } from '../subworkflows/local/vptupdatemeta/main'
 include { VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS } from '../modules/local/vizgenpostprocessing/generatesegmentationmetrics/main'
 
 /*
@@ -74,33 +75,37 @@ workflow SPATIALVPT {
             images_dir,
             images_regex,
             um_to_mosaic_file,
-            detected_transcripts,
             custom_weights,
+        )
+
+        //
+        // SUBWORKFLOW: Update metadata with segmentation results
+        //
+        VPTUPDATEMETA(
+            meta,
+            VPTSEGMENTATION.out.segmentation,
+            detected_transcripts,
             update_vzg,
-            input_vzg,
-            tile_size,
-            tile_overlap
+            input_vzg
         )
 
         // compile channels for input to generate-segmentation-metrics
-        ch_entity_by_gene = VPTSEGMENTATION.out.entity_by_gene
-        ch_metadata       = VPTSEGMENTATION.out.metadata
-        ch_transcripts    = VPTSEGMENTATION.out.transcripts
-        ch_images         = VPTSEGMENTATION.out.images
+        ch_metadata       = VPTUPDATEMETA.out.metadata
+        ch_transcripts    = VPTUPDATEMETA.out.transcripts
         ch_boundaries     = VPTSEGMENTATION.out.segmentation
-        ch_mosaic         = VPTSEGMENTATION.out.mosaic
+        ch_images         = meta.concat(images_dir)
 
         //
         // MODULE: vpt generate-segmentation-metrics
         //
         VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS(
             meta,
-            ch_entity_by_gene,
+            entity_by_gene,
             ch_metadata,
             ch_transcripts,
             ch_images,
             ch_boundaries,
-            ch_mosaic,
+            um_to_mosaic_file,
             z_index,
             red_stain_name,
             green_stain_name,
