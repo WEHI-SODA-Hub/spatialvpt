@@ -27,8 +27,8 @@ workflow SPATIALVPT {
     custom_weights
     update_vzg
     input_vzg
-    tile_size
-    tile_overlap
+    _tile_size
+    _tile_overlap
     z_index
     red_stain_name
     green_stain_name
@@ -45,7 +45,7 @@ workflow SPATIALVPT {
 
     main:
 
-    sample.map{ sample -> [id: sample] }
+    sample.map{ it -> [id: it] }
         .set{ meta }
 
     ch_segmentation = Channel.empty()
@@ -88,7 +88,7 @@ workflow SPATIALVPT {
 
         // Need to remove meta for downstream processing
         VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.segmentation
-            .map { meta, parquet -> parquet
+            .map { _meta, parquet -> parquet
             }.set{ ch_segmentation }
 
         ch_versions = VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.versions
@@ -115,7 +115,6 @@ workflow SPATIALVPT {
         // SUBWORKFLOW: Update metadata with segmentation results
         //
         VPTUPDATEMETA(
-            meta,
             ch_segmentation,
             detected_transcripts,
             update_vzg,

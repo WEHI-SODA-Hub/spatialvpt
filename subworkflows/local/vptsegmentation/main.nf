@@ -5,7 +5,7 @@
 
 include { VIZGENPOSTPROCESSING_PREPARESEGMENTATION     } from '../../../modules/nf-core/vizgenpostprocessing/preparesegmentation/main'
 include { VIZGENPOSTPROCESSING_RUNSEGMENTATIONONTILE   } from '../../../modules/nf-core/vizgenpostprocessing/runsegmentationontile/main'
-include { VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION } from '../../../modules/local/vizgenpostprocessing/compiletilesegmentation/main'
+include { VIZGENPOSTPROCESSING_COMPILETILESEGMENTATION } from '../../../modules/nf-core/vizgenpostprocessing/compiletilesegmentation/main'
 include { softwareVersionsToYAML                       } from '../../../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText                       } from '../../../subworkflows/local/utils_nfcore_spatialvpt_pipeline'
 

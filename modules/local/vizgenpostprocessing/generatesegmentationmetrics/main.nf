@@ -2,9 +2,7 @@ process VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS {
     tag "$meta.id"
     label 'process_medium'
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' :
-        'ghcr.io/wehi-soda-hub/vizgen-postprocessing_container:v0.1.0' }"
+    container 'nf-core/vizgen-postprocessing_container:v0.1.1'
 
     input:
     val(meta)

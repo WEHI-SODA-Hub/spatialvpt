@@ -5,7 +5,6 @@ include { VIZGENPOSTPROCESSING_UPDATEVZG               } from '../../../modules/
 workflow VPTUPDATEMETA {
 
     take:
-    meta
     micron_space
     detected_txs
     update_vzg
@@ -19,7 +18,6 @@ workflow VPTUPDATEMETA {
     // MODULE: Run vpt derive-entity-metadata
     //
     VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA(
-        meta,
         micron_space
     )
 
@@ -27,7 +25,6 @@ workflow VPTUPDATEMETA {
     // MODULE: Run vpt partition-transcripts
     //
     VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS(
-        meta,
         micron_space,
         detected_txs
     )
@@ -45,7 +42,7 @@ workflow VPTUPDATEMETA {
         // MODULE: Run vpt update-vzg
         //
         VIZGENPOSTPROCESSING_UPDATEVZG(
-            meta,
+            micron_space.map { meta, _micron_space -> meta },
             input_vzg,
             micron_space,
             ch_entity_by_gene,
@@ -56,8 +53,9 @@ workflow VPTUPDATEMETA {
     }
 
     // get transcripts channel for downstream output
-    meta.concat(detected_txs)
-        .set{ ch_transcripts }
+    micron_space
+    .map { meta, _micron_space -> meta }.concat(detected_txs)
+    .set{ ch_transcripts }
 
     emit:
     metadata       = ch_entity_metadata
