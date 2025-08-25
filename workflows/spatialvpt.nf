@@ -4,10 +4,10 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { VPTSEGMENTATION                                  } from '../subworkflows/local/vptsegmentation/main'
+include { TIFF_SEGMENTATION_VPT                            } from '../subworkflows/nf-core/tiff_segmentation_vpt/main'
 include { VPTUPDATEMETA                                    } from '../subworkflows/local/vptupdatemeta/main'
 include { VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS } from '../modules/local/vizgenpostprocessing/generatesegmentationmetrics/main'
-include { VIZGENPOSTPROCESSING_CONVERTGEOMETRY           } from '../modules/local/vizgenpostprocessing/convertgeometry/main'
+include { VIZGENPOSTPROCESSING_CONVERTGEOMETRY             } from '../modules/local/vizgenpostprocessing/convertgeometry/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +49,7 @@ workflow SPATIALVPT {
         .set{ meta }
 
     ch_segmentation = Channel.empty()
+    ch_versions     = Channel.empty()
 
     if (report_only.value && convert_geometry.value) {
         error "The 'convert_geometry parameter' is incompatible with 'report_only'. Please set 'convert_geometry' to false or remove 'report_only'."
@@ -72,7 +73,7 @@ workflow SPATIALVPT {
             volume_filter_threshold
         )
 
-        ch_versions = VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions
+        ch_versions = ch_versions.mix(VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions)
     } else if (convert_geometry.value) {
         // Create channel for conversion
         meta.combine(boundary_dir)
@@ -91,23 +92,28 @@ workflow SPATIALVPT {
             .map { _meta, parquet -> parquet
             }.set{ ch_segmentation }
 
-        ch_versions = VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.versions
+        ch_versions = ch_versions.mix(VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.versions)
     } else {
+        // Crate input channel for segmentation workflow
+        ch_input = meta
+            .combine(images_dir)
+            .combine(um_to_mosaic_file)
+            .map { meta_val, img_dir, transform_file ->
+                [meta_val, img_dir, transform_file]
+            }
+
         //
         // SUBWORKFLOW: Run segmentation workflow with vpt
         //
-        VPTSEGMENTATION(
-            meta,
-            algorithm_json,
-            images_dir,
+        TIFF_SEGMENTATION_VPT(
+            ch_input,
+            algorithm_json.first(),
             images_regex,
-            um_to_mosaic_file,
-            custom_weights,
+            custom_weights.first()
         )
+        ch_versions = ch_versions.mix(TIFF_SEGMENTATION_VPT.out.versions)
 
-        VPTSEGMENTATION.out.segmentation.set{ ch_segmentation }
-
-        ch_versions = VPTSEGMENTATION.out.versions
+        TIFF_SEGMENTATION_VPT.out.micron_space_segmentation.set{ ch_segmentation }
     }
 
     if (!report_only.value) {
@@ -120,6 +126,7 @@ workflow SPATIALVPT {
             update_vzg,
             input_vzg
         )
+        ch_versions = ch_versions.mix(VPTUPDATEMETA.out.versions)
 
         // compile channels for input to generate-segmentation-metrics
         ch_metadata       = VPTUPDATEMETA.out.metadata
@@ -144,11 +151,7 @@ workflow SPATIALVPT {
             transcript_count_threshold,
             volume_filter_threshold
         )
-
-        ch_versions
-            .combine(VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions)
-            .combine(VPTUPDATEMETA.out.versions)
-            .set{ ch_versions }
+        ch_versions = ch_versions.mix(VIZGENPOSTPROCESSING_GENERATESEGMENTATIONMETRICS.out.versions)
     }
 
     emit:
