@@ -1,26 +1,43 @@
 lint:
   files_exist:
-    - CODE_OF_CONDUCT.md
-    - assets/nf-core-spatialsegmentation_logo_light.png
-    - docs/images/nf-core-spatialsegmentation_logo_light.png
-    - docs/images/nf-core-spatialsegmentation_logo_dark.png
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - assets/multiqc_config.yml
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - conf/test.config
+    - conf/test_full.config
+    - assets/multiqc_config.yml
     - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/nf-test.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
-    - conf/igenomes.config
-  files_unchanged:
+    - .github/workflows/fix-linting.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - .github/actions/
+    - assets/nf-core-spatialproteomics_logo_light.png
+    - docs/images/nf-core-spatialproteomics_logo_light.png
+    - docs/images/nf-core-spatialproteomics_logo_dark.png
+    - tests/default.nf.test
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-spatialsegmentation_logo_light.png
-    - docs/images/nf-core-spatialsegmentation_logo_light.png
-    - docs/images/nf-core-spatialsegmentation_logo_dark.png
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - assets/email_template.txt
+    - assets/email_template.html
     - .github/ISSUE_TEMPLATE/bug_report.yml
-  multiqc_config:
-    - report_comment
-  nextflow_config:
-    - manifest.name
-    - manifest.homePage
-  modules_json: false
-nf_core_version: 3.2.0
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
+    - docs/README.md
+    - .prettierignore
+    - .prettierrc.yml
+  multiqc_config: false
+  nextflow_config: false
+nf_core_version: 3.3.2
 repository_type: pipeline
 template:
   prefix: WEHI-SODA-Hub
