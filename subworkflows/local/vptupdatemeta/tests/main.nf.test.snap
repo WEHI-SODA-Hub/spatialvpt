@@ -1,0 +1,47 @@
+{
+    "merscope - parquet, csv, vzg": {
+        "content": [
+            {
+                "0": [
+                    "cell_metadata_resegmented.csv:md5,cb734bdf1dbcbd65015880eb4fafc64b"
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "detected_transcripts.csv:md5,65ecb4084dc540dba17b5b1429924da1"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    
+                ],
+                "metadata": [
+                    "cell_metadata_resegmented.csv:md5,cb734bdf1dbcbd65015880eb4fafc64b"
+                ],
+                "transcripts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "detected_transcripts.csv:md5,65ecb4084dc540dba17b5b1429924da1"
+                    ]
+                ],
+                "versions": [
+                    
+                ],
+                "vzg": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-08-26T12:20:40.19847494"
+    }
+}

@@ -20,6 +20,9 @@ workflow VPTUPDATEMETA {
     VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA(
         micron_space
     )
+    ch_versions = ch_versions.mix(
+        VIZGENPOSTPROCESSING_DERIVEENTITYMETADATA.out.versions
+    )
 
     //
     // MODULE: Run vpt partition-transcripts
@@ -27,6 +30,9 @@ workflow VPTUPDATEMETA {
     VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS(
         micron_space,
         detected_txs
+    )
+    ch_versions = ch_versions.mix(
+        VIZGENPOSTPROCESSING_PARTITIONTRANSCRIPTS.out.versions
     )
 
     // Output channels
@@ -48,13 +54,16 @@ workflow VPTUPDATEMETA {
             ch_entity_by_gene,
             ch_entity_metadata
         )
+        ch_versions = ch_versions.mix(
+            VIZGENPOSTPROCESSING_UPDATEVZG.out.versions
+        )
 
         ch_vzg = VIZGENPOSTPROCESSING_UPDATEVZG.out.vzg_file
     }
 
     // get transcripts channel for downstream output
     micron_space
-    .map { meta, _micron_space -> meta }.concat(detected_txs)
+    .map { meta, _micron_space -> [meta, detected_txs] }
     .set{ ch_transcripts }
 
     emit:
