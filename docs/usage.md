@@ -4,61 +4,55 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+## Parameter input
 
-## Samplesheet input
+The spatialvpt pipeline does not use a sample sheet. Instead, parameters are defined directly. The full list of parameters is in the table below.
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
-
-```bash
---input '[path to samplesheet file]'
-```
-
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
-### Full samplesheet
-
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
-```
-
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+| Parameter                    | Description                                                                                                              |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Input/Output Options**     |                                                                                                                          |
+| `sample`                     | Sample name.                                                                                                             |
+| `outdir`                     | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure. |
+| **Segmentation Options**     |                                                                                                                          |
+| `algorithm_json`             | Path to the JSON file containing the algorithm parameters.                                                               |
+| `images_dir`                 | Path to the directory containing the images.                                                                             |
+| `images_regex`               | Regex pattern for selecting images.                                                                                      |
+| `um_to_mosaic_file`          | Path to the CSV file containing the micron to mosaic conversion.                                                         |
+| `detected_transcripts`       | Path to the CSV file containing the detected transcripts.                                                                |
+| `custom_weights`             | Path to the custom weights file.                                                                                         |
+| `update_vzg`                 | Create updated VZG file after segmentation.                                                                              |
+| `input_vzg`                  | Path to the VZG file for visualisation in MERSCOPE visualiser.                                                           |
+| `tile_size`                  | Tile size for splitting large images.                                                                                    |
+| `tile_overlap`               | Overlap between tiles.                                                                                                   |
+| **Convert Geometry Options** |                                                                                                                          |
+| `convert_geometry`           | Enable to convert existing segmentations instead of running vpt's segmentation.                                          |
+| `boundary_dir`               | Directory containing boundary files.                                                                                     |
+| `boundary_regex`             | Regex pattern for selecting boundary files. Supports geojson and hdf5 formats.                                           |
+| **Report Options**           |                                                                                                                          |
+| `z_index`                    | Z index used to generate patches for the report.                                                                         |
+| `red_stain_name`             | Stain name for red channel.                                                                                              |
+| `green_stain_name`           | Stain name for green channel.                                                                                            |
+| `blue_stain_name`            | Stain name for blue channel.                                                                                             |
+| `transcript_count_threshold` | Cell transcript count threshold for computing metrics and clustering.                                                    |
+| `volume_filter_threshold`    | Cell volume threshold for computing metrics and clustering.                                                              |
+| **Report Only Options**      |                                                                                                                          |
+| `report_only`                | Generate report only (no segmentation). Requires all input files to be specified in sample sheet.                        |
+| `metadata`                   | Path to the CSV file containing cell metadata.                                                                           |
+| `entity_by_gene`             | Path to the CSV file containing entity by gene.                                                                          |
+| `boundaries`                 | Path to parquet file containing boundaries.                                                                              |
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run WEHI-SODA-Hub/spatialvpt --input ./samplesheet.csv --outdir ./results --genome GRCh37 -profile docker
+nextflow run WEHI-SODA-Hub/spatialvpt \
+   -profile <docker/singularity/.../institute> \
+   -params-file params.yml \
+   --outdir <OUTDIR>
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -71,28 +65,11 @@ work                # Directory containing the nextflow working files
 
 If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
 
-Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
+Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`. You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
 :::warning
 Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
 :::
-
-The above pipeline run specified with a params file in yaml format:
-
-```bash
-nextflow run WEHI-SODA-Hub/spatialvpt -profile docker -params-file params.yaml
-```
-
-with `params.yaml` containing:
-
-```yaml
-input: './samplesheet.csv'
-outdir: './results/'
-genome: 'GRCh37'
-<...>
-```
-
-You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
 ### Updating the pipeline
 

@@ -13,11 +13,21 @@
 
 **WEHI-SODA-Hub/spatialvpt** is a bioinformatics pipeline that performs cell segmentation and creates a QC report for MERSCOPE data using the vizgen-postprocessing tool.
 
-The pipeline performs the following steps:
-
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
 ![WEHI-SODA-Hub/spatialvpt workflow](docs/images/nf-core-spatialvpt_workflow.svg)
+
+The pipeline runs the following steps:
+
+- [tiff_segmentation_vpt](https://nf-co.re/subworkflows/tiff_segmentation_vpt/) -- nf-core subworkflow that performs segmentation that uses the [vizgen post-processing tool](https://github.com/Vizgen/vizgen-postprocessing), which runs the following modules:
+  - [vizgenpostprocessing/preparesegmentation](https://nf-co.re/modules/vizgenpostprocessing_preparesegmentation/)
+  - [vizgenpostprocessing/runsegmentationontile](https://nf-co.re/modules/vizgenpostprocessing_runsegmentationontile/)
+  - [vizgenpostprocessing/compiletilesegmentation](https://nf-co.re/modules/vizgenpostprocessing_compiletilesegmentation/)
+- [vpt convert-geometry](https://vizgen.github.io/vizgen-postprocessing/command_line_interface/index.html#convert-geometry) (optionally, to convert existing segmentation geometries)
+- `vptupdatemeta` subworkflow, which runs:
+  - [vpt derive-entity-metadata](https://vizgen.github.io/vizgen-postprocessing/command_line_interface/index.html#derive-entity-metadata)
+  - [vpt partition-transcripts](https://vizgen.github.io/vizgen-postprocessing/command_line_interface/index.html#partition-transcripts)
+  - [vpt update-vzg](https://vizgen.github.io/vizgen-postprocessing/command_line_interface/index.html#update-vzg) (optional)
+- [vpt generate-segmentation-metrics](https://vizgen.github.io/vizgen-postprocessing/command_line_interface/index.html#generate-segmentation-metrics)
+- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ## Usage
 
@@ -113,6 +123,7 @@ green_stain_name: "Cellbound2"
 blue_stain_name: "DAPI"
 transcript_count_threshold: 100
 volume_filter_threshold: 200
+z_index: 2
 ```
 
 ### Report-only mode
@@ -145,7 +156,9 @@ WEHI-SODA-Hub/spatialvpt was originally written by Marek Cmero.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+- Raymond Yip
+- Pradeep Rajasekhar (@pr4deepr)
+- All members of the [WEHI SODA Hub](https://wehi-soda-hub.github.io/)
 
 ## Contributions and Support
 
