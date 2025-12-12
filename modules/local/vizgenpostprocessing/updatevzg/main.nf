@@ -5,8 +5,7 @@ process VIZGENPOSTPROCESSING_UPDATEVZG {
     container 'nf-core/vizgen-postprocessing_container:v0.1.1'
 
     input:
-    val(meta)
-    path(input_vzg)
+    tuple val(meta), path(input_vzg)
     path(micron_space)
     path(entity_by_gene)
     path(metadata)

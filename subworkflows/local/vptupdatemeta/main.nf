@@ -44,16 +44,25 @@ workflow VPTUPDATEMETA {
 
     ch_vzg = Channel.empty()
     if (update_vzg.value) {
+        micron_space
+            .map { meta, _micron_space -> meta }
+            .join(input_vzg)
+            .set { ch_input_vzg }
+
+        micron_space
+            .map { _meta, ms -> ms }
+            .set { ch_micron_space_only }
+
         //
         // MODULE: Run vpt update-vzg
         //
         VIZGENPOSTPROCESSING_UPDATEVZG(
-            micron_space.map { meta, _micron_space -> meta },
-            input_vzg,
-            micron_space,
+            ch_input_vzg,
+            ch_micron_space_only,
             ch_entity_by_gene,
             ch_entity_metadata
         )
+
         ch_versions = ch_versions.mix(
             VIZGENPOSTPROCESSING_UPDATEVZG.out.versions
         )
@@ -70,6 +79,8 @@ workflow VPTUPDATEMETA {
     metadata       = ch_entity_metadata
     transcripts    = ch_transcripts
     vzg            = ch_vzg
+    input_vzg      = input_vzg
+    micron_space   = micron_space
 
     versions = ch_versions                     // channel: [ versions.yml ]
 }

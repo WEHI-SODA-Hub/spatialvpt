@@ -87,10 +87,8 @@ workflow SPATIALVPT {
             ch_convert
         )
 
-        // Need to remove meta for downstream processing
         VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.segmentation
-            .map { _meta, parquet -> parquet
-            }.set{ ch_segmentation }
+            .set{ ch_segmentation }
 
         ch_versions = ch_versions.mix(VIZGENPOSTPROCESSING_CONVERTGEOMETRY.out.versions)
     } else {
